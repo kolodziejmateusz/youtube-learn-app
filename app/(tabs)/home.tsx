@@ -1,20 +1,27 @@
 import Button from "@/components/Button";
+import SearchInput from "@/components/SearchInput";
 import { useRouter } from "expo-router";
-import { Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 export default function Home() {
   const router = useRouter();
 
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Text style={{ fontFamily: "Poppins-Regular" }}>This is Home view</Text>
-      <Button onPress={() => router.replace("/")}>Back</Button>
+    <View style={styles.container}>
+      <SearchInput />
+
+      <Button style={styles.button} onPress={() => router.replace("/")}>
+        Back
+      </Button>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    marginTop: 50,
+  },
+  button: {
+    marginTop: 50,
+  },
+});
