@@ -4,6 +4,7 @@ import Button from "@/components/Button";
 import SearchInput from "@/components/SearchInput";
 import { useRouter } from "expo-router";
 import { StyleSheet, View } from "react-native";
+import Card from "@/components/Card";
 
 export default function Home() {
   const router = useRouter();
@@ -19,6 +20,7 @@ export default function Home() {
       <Button style={styles.button} onPress={() => router.replace("/")}>
         Back
       </Button>
+      <Card/>
     </>
   );
 }
