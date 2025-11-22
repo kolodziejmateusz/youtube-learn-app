@@ -3,8 +3,8 @@ import { useRouter } from "expo-router";
 import { Text, View } from "react-native";
 
 export default function Home() {
-    const router = useRouter();
-  
+  const router = useRouter();
+
   return (
     <View
       style={{
@@ -13,7 +13,7 @@ export default function Home() {
         alignItems: "center",
       }}
     >
-      <Text>This is Home view</Text>
+      <Text style={{ fontFamily: "Poppins-Regular" }}>This is Home view</Text>
       <Button onPress={() => router.replace("/")}>Back</Button>
     </View>
   );
