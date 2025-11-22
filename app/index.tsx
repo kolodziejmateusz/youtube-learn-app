@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
   },
   welcomeText: {
     fontSize: 19,
-    fontFamily: "Poppins-Regular",
+    fontFamily: "Poppins-Bold",
     fontWeight: "bold",
     color: "white",
   },

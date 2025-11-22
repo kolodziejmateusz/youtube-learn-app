@@ -20,7 +20,9 @@ export default function Card() {
 
 const styles = StyleSheet.create({
   container: {
-    margin: 24,
+    marginLeft: 24,
+    marginVertical: 24,
+    width: 180,
   },
   logo: {
     width: 180,
@@ -33,7 +35,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   date: {
-    color: "#BBB",
+    color: "#2B2D42",
     fontSize: 13,
     alignSelf: "flex-end",
   },
