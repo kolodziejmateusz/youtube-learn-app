@@ -20,7 +20,8 @@ export default function Home() {
       <Button style={styles.button} onPress={() => router.replace("/")}>
         Back
       </Button>
-      <Card/>
+      <View><Card/></View>
+      
     </>
   );
 }

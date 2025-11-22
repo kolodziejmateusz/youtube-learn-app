@@ -1,5 +1,5 @@
 import React from "react";
-import { Image, StyleSheet, View, Text } from "react-native";
+import { Image, StyleSheet, Text, View } from "react-native";
 
 export default function Card() {
   return (
@@ -10,8 +10,10 @@ export default function Card() {
           uri: "https://i.ytimg.com/vi/gvkqT_Uoahw/maxresdefault.jpg",
         }}
       />
-      <Text>Super fajny film o react</Text>
-      <Text>18.10.2025</Text>
+      <Text style={styles.text}>
+        Super fajny film o react Super fajny film o react
+      </Text>
+      <Text style={styles.date}>18.10.2025</Text>
     </View>
   );
 }
@@ -23,6 +25,16 @@ const styles = StyleSheet.create({
   logo: {
     width: 180,
     height: 130,
-    borderRadius: 12
+    borderRadius: 12,
+  },
+  text: {
+    width: 180,
+    fontFamily: "Poppins-Regular",
+    fontWeight: "600",
+  },
+  date: {
+    color: "#BBB",
+    fontSize: 13,
+    alignSelf: "flex-end",
   },
 });
