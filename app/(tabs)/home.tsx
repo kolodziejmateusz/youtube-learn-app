@@ -1,7 +1,10 @@
 import Button from "@/components/Button";
+import { useRouter } from "expo-router";
 import { Text, View } from "react-native";
 
-export default function Index() {
+export default function Home() {
+    const router = useRouter();
+  
   return (
     <View
       style={{
@@ -10,8 +13,8 @@ export default function Index() {
         alignItems: "center",
       }}
     >
-      <Text>This is search view</Text>
-      <Button>Home view</Button>
+      <Text>This is Home view</Text>
+      <Button onPress={() => router.replace("/")}>Back</Button>
     </View>
   );
 }
