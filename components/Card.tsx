@@ -5,21 +5,34 @@ interface CardProps {
   title: string;
   thumbnailUrl: string;
   publishedAt: string;
+  variant?: "horizontal" | "full";
 }
 
-export default function Card({ title, thumbnailUrl, publishedAt }: CardProps) {
+export default function Card({
+  title,
+  thumbnailUrl,
+  publishedAt,
+  variant = "horizontal",
+}: CardProps) {
   return (
-    <View style={styles.container}>
+    <View
+      style={[styles.container, variant === "full" && styles.containerFull]}
+    >
       <Image
-        style={styles.logo}
+        style={[styles.logo, variant === "full" && styles.logoFull]}
         source={{
           uri: thumbnailUrl,
         }}
       />
-      <Text style={styles.text} numberOfLines={2}>
-        {title}
-      </Text>
-      <Text style={styles.date}>{publishedAt}</Text>
+      <View style={styles.textContainer}>
+        <Text
+          style={[styles.text, variant === "full" && styles.textFull]}
+          numberOfLines={2}
+        >
+          {title}
+        </Text>
+        <Text style={styles.date}>{publishedAt}</Text>
+      </View>
     </View>
   );
 }
@@ -30,16 +43,30 @@ const styles = StyleSheet.create({
     marginVertical: 24,
     width: 180,
   },
+
+  containerFull: {
+    width: "auto",
+    marginHorizontal: 24,
+  },
   logo: {
     width: 180,
     height: 100,
     borderRadius: 12,
   },
+  logoFull: {
+    width: "100%",
+    height: 185,
+  },
+  textContainer: {
+    marginTop: 8,
+  },
   text: {
     width: 180,
     fontFamily: "Poppins-Regular",
     fontWeight: "600",
-    marginTop: 8,
+  },
+  textFull: {
+    width: "100%",
   },
   date: {
     color: "#2B2D42",
