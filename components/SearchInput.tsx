@@ -1,8 +1,20 @@
 import SearchIcon from "@/assets/icons/search-icon.svg";
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, TextInput, View } from "react-native";
 
-export default function SearchInput() {
+interface SearchInputProps {
+  onSearch?: (query: string) => void;
+}
+
+export default function SearchInput({ onSearch }: SearchInputProps) {
+  const [searchQuery, setSearchQuery] = useState<string>("");
+
+  const handleSearch = () => {
+    if (searchQuery.trim() && onSearch) {
+      onSearch(searchQuery);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <SearchIcon />
@@ -10,6 +22,9 @@ export default function SearchInput() {
         style={styles.input}
         placeholder="Search videos"
         placeholderTextColor="#B3B3B3"
+        value={searchQuery}
+        onChangeText={setSearchQuery}
+        onSubmitEditing={handleSearch}
       />
     </View>
   );
@@ -18,8 +33,6 @@ export default function SearchInput() {
 const styles = StyleSheet.create({
   container: {
     marginHorizontal: 24,
-    // marginTop: 50,
-
     flexDirection: "row",
     alignItems: "center",
     borderColor: "#2B2D42",
