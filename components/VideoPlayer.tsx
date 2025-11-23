@@ -24,13 +24,11 @@ export default function VideoScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    padding: 10,
-    alignItems: "center",
-    justifyContent: "center",
+    width: "100%",
+    aspectRatio: 16 / 9,
   },
   video: {
-    width: 350,
-    height: 275,
+    width: "100%",
+    height: "100%",
   },
 });

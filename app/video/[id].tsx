@@ -1,11 +1,10 @@
 import LikesIcon from "@/assets/icons/likes-icon.svg";
 import PersonIcon from "@/assets/icons/person-icon.svg";
 import ViewsIcon from "@/assets/icons/views-icon.svg";
+import VideoPlayer from "@/components/VideoPlayer";
 import { useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
-// import VideoPlayer from '@/components/VideoPlayer'
-import VideoPlayer from "@/components/VideoPlayer";
 
 type VideoDetails = {
   id: string;
@@ -56,34 +55,37 @@ export default function Video() {
       console.error("Error fetching video details:", err);
     }
   };
-  console.log(video);
 
   if (!video) {
     return <Text>Loading</Text>;
   }
 
   return (
-    <ScrollView style={styles.card} showsVerticalScrollIndicator={false}>
+    <ScrollView
+      style={styles.scrollContainer}
+      showsVerticalScrollIndicator={false}
+    >
       <VideoPlayer />
-      <Text style={styles.title}>{video.title}</Text>
-      <View style={styles.channelRow}>
-        <View style={styles.avatar}>
-          <PersonIcon />
+      <View style={styles.content}>
+        <Text style={styles.title}>{video.title}</Text>
+        <View style={styles.channelRow}>
+          <View style={styles.avatar}>
+            <PersonIcon />
+          </View>
+          <Text style={styles.channelName}>{video.channelTitle}</Text>
         </View>
-
-        <Text style={styles.channelName}>{video.channelTitle}</Text>
-      </View>
-      <Text style={styles.sectionTitle}>Description</Text>
-      <Text style={styles.description}>{video.description}</Text>
-      <Text style={styles.sectionTitle}>Statistics</Text>
-      <View style={styles.statsRow}>
-        <View style={styles.statBox}>
-          <ViewsIcon />
-          <Text style={styles.statValue}>{video.viewCount} views</Text>
-        </View>
-        <View style={styles.statBox}>
-          <LikesIcon />
-          <Text style={styles.statValue}>{video.likeCount} likes</Text>
+        <Text style={styles.sectionTitle}>Description</Text>
+        <Text style={styles.description}>{video.description}</Text>
+        <Text style={styles.sectionTitle}>Statistics</Text>
+        <View style={styles.statsRow}>
+          <View style={styles.statBox}>
+            <ViewsIcon />
+            <Text style={styles.statValue}>{video.viewCount} views</Text>
+          </View>
+          <View style={styles.statBox}>
+            <LikesIcon />
+            <Text style={styles.statValue}>{video.likeCount} likes</Text>
+          </View>
         </View>
       </View>
     </ScrollView>
@@ -91,9 +93,12 @@ export default function Video() {
 }
 
 const styles = StyleSheet.create({
-  card: {
+  scrollContainer: {
+    flex: 1,
+  },
+  content: {
     margin: 30,
-    marginTop: 50,
+    marginTop: 20,
   },
   title: {
     fontWeight: "bold",
@@ -114,7 +119,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-
   channelName: {
     fontFamily: "Poppins-Bold",
     fontSize: 16,
