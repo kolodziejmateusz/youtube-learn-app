@@ -39,7 +39,6 @@
           }
         }
       ],
-      
       "expo-font",
       [
         "react-native-video",
@@ -52,7 +51,8 @@
             "useExoplayerDash": false
           }
         }
-      ]
+      ],
+      "expo-video"
     ],
     "experiments": {
       "typedRoutes": true,

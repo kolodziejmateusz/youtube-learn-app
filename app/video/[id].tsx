@@ -5,6 +5,7 @@ import { useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 // import VideoPlayer from '@/components/VideoPlayer'
+import VideoPlayer from "@/components/VideoPlayer";
 
 type VideoDetails = {
   id: string;
@@ -63,7 +64,7 @@ export default function Video() {
 
   return (
     <ScrollView style={styles.card} showsVerticalScrollIndicator={false}>
-      {/* <VideoPlayer/> */}
+      <VideoPlayer />
       <Text style={styles.title}>{video.title}</Text>
       <View style={styles.channelRow}>
         <View style={styles.avatar}>

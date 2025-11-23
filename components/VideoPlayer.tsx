@@ -1,42 +1,36 @@
-// Load the module
-import { useRef } from "react";
-import { StyleSheet } from "react-native";
-import Video, { VideoRef } from "react-native-video";
+import { useVideoPlayer, VideoView } from "expo-video";
+import { StyleSheet, View } from "react-native";
 
-// Inside your render function, assuming you have a file called
-// "background.mp4" in your project. You can include multiple videos
-// on a single screen if needed.
+const videoSource =
+  "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
 
-const VideoPlayer = () => {
-  const videoRef = useRef<VideoRef>(null);
-  //   const background = require('./background.mp4');
+export default function VideoScreen() {
+  const player = useVideoPlayer(videoSource, (player) => {
+    player.loop = true;
+    player.play();
+  });
 
   return (
-    <Video
-      // Can be a URL or a local file.
-      source={{
-        uri: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
-      }}
-      // Store reference
-      ref={videoRef}
-      // Callback when remote video is buffering
-      //   onBuffer={onBuffer}
-      // Callback when the video cannot be loaded
-      //   onError={onError}
-      style={styles.backgroundVideo}
-    />
+    <View style={styles.container}>
+      <VideoView
+        style={styles.video}
+        player={player}
+        allowsFullscreen
+        allowsPictureInPicture
+      />
+    </View>
   );
-};
+}
 
-// Later in your styles...
-let styles = StyleSheet.create({
-  backgroundVideo: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 10,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  video: {
+    width: 350,
+    height: 275,
   },
 });
-
-export default VideoPlayer;
