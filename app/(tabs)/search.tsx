@@ -84,6 +84,7 @@ export default function Search() {
         {searchResults.map((video) => (
           <Card
             key={video.id.videoId}
+            id={video.id.videoId}
             title={video.snippet.title}
             thumbnailUrl={video.snippet.thumbnails.high.url}
             publishedAt={formatDate(video.snippet.publishedAt)}
@@ -102,7 +103,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   searchContainer: {
-    marginTop: 40,
+    marginTop: 60,
     marginBottom: 25,
   },
   resultsHeader: {

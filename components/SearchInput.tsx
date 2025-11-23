@@ -49,19 +49,28 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     gap: 5,
     backgroundColor: "white",
+    height: 44,
   },
 
   input: {
+    flex: 1,
+    height: 44,
     fontSize: 16,
     color: "#2B2D4299",
+    paddingVertical: 0,
+    textAlignVertical: "center",
+    margin: 0,
+    padding: 10,
   },
 
   disabledText: {
+    flex: 1,
     fontSize: 16,
     color: "#2B2D4299",
-    flex: 1,
-    lineHeight: 24,
     height: 44,
+    lineHeight: 22,
     textAlignVertical: "center",
+    padding: 10,
+    margin: 0,
   },
 });

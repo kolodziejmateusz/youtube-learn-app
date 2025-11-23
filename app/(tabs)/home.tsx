@@ -103,6 +103,7 @@ export default function Home() {
               {category.videos.map((video) => (
                 <Card
                   key={video.id.videoId}
+                  id={video.id.videoId}
                   title={video.snippet.title}
                   thumbnailUrl={video.snippet.thumbnails.high.url}
                   publishedAt={formatDate(video.snippet.publishedAt)}
@@ -121,10 +122,11 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
+    marginTop: 60,
+    marginBottom: 25,
   },
   inputContainer: {
     flex: 1,
-    marginVertical: 40,
   },
   icon: {
     marginRight: 24,

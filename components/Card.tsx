@@ -1,7 +1,9 @@
+import { useRouter } from "expo-router";
 import React from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 type CardProps = {
+  id: string;
   title: string;
   thumbnailUrl: string;
   channelTitle?: string;
@@ -10,35 +12,47 @@ type CardProps = {
 };
 
 export default function Card({
+  id,
   title,
   thumbnailUrl,
   publishedAt,
   channelTitle,
   variant = "horizontal",
 }: CardProps) {
+  const router = useRouter();
+
+  const handlePress = () => {
+    router.push({
+      pathname: "/video/[id]",
+      params: { id },
+    });
+  };
+
   return (
-    <View
-      style={[styles.container, variant === "full" && styles.containerFull]}
-    >
-      <Image
-        style={[styles.logo, variant === "full" && styles.logoFull]}
-        source={{
-          uri: thumbnailUrl,
-        }}
-      />
-      <View style={styles.textContainer}>
-        {channelTitle && (
-          <Text style={styles.channelTitle}>{channelTitle}</Text>
-        )}
-        <Text
-          style={[styles.text, variant === "full" && styles.textFull]}
-          numberOfLines={2}
-        >
-          {title}
-        </Text>
-        <Text style={styles.date}>{publishedAt}</Text>
+    <TouchableOpacity onPress={handlePress}>
+      <View
+        style={[styles.container, variant === "full" && styles.containerFull]}
+      >
+        <Image
+          style={[styles.logo, variant === "full" && styles.logoFull]}
+          source={{
+            uri: thumbnailUrl,
+          }}
+        />
+        <View style={styles.textContainer}>
+          {channelTitle && (
+            <Text style={styles.channelTitle}>{channelTitle}</Text>
+          )}
+          <Text
+            style={[styles.text, variant === "full" && styles.textFull]}
+            numberOfLines={2}
+          >
+            {title}
+          </Text>
+          <Text style={styles.date}>{publishedAt}</Text>
+        </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }
 
@@ -48,7 +62,6 @@ const styles = StyleSheet.create({
     marginVertical: 24,
     width: 180,
   },
-
   containerFull: {
     width: "auto",
     marginHorizontal: 24,
