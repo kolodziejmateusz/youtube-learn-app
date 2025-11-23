@@ -2,13 +2,21 @@ import Card from "@/components/Card";
 import SearchInput from "@/components/SearchInput";
 import { VideoItem } from "@/types/VideoItem";
 import { formatDate } from "@/utils/formatDate";
-import { useState } from "react";
+import { useLocalSearchParams } from "expo-router";
+import { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 
 const YOUTUBE_API_KEY = process.env.EXPO_PUBLIC_YOUTUBE_API_KEY;
 const MAX_RESULTS = 10;
 
 export default function Search() {
+  const { query: initialQuery } = useLocalSearchParams();
+  useEffect(() => {
+    if (initialQuery && typeof initialQuery === "string") {
+      handleSearch(initialQuery);
+    }
+  }, [initialQuery]);
+
   const [searchResults, setSearchResults] = useState<VideoItem[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [totalResults, setTotalResults] = useState<number>(0);

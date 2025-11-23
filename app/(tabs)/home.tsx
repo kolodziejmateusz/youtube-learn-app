@@ -68,9 +68,12 @@ export default function Home() {
   return (
     <>
       <View style={styles.container}>
-        <View style={styles.inputContainer}>
-          <SearchInput />
-        </View>
+        <TouchableOpacity
+          onPress={() => router.replace("/search")}
+          style={styles.inputContainer}
+        >
+          <SearchInput disableInput />
+        </TouchableOpacity>
         <TouchableOpacity
           onPress={() => router.replace("/")}
           style={styles.icon}
@@ -84,7 +87,16 @@ export default function Home() {
           <View key={index}>
             <View style={styles.titleContainer}>
               <Text style={styles.title}>{category.name}</Text>
-              <Text style={styles.showMore}>Show more</Text>
+              <TouchableOpacity
+                onPress={() =>
+                  router.push({
+                    pathname: "/search",
+                    params: { query: category.query },
+                  })
+                }
+              >
+                <Text style={styles.showMore}>Show more</Text>
+              </TouchableOpacity>
             </View>
 
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
