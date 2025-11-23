@@ -11,6 +11,6 @@ export default function Search() {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 50,
+    marginVertical: 40,
   },
 });
