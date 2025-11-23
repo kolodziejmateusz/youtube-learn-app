@@ -10,10 +10,15 @@ const MAX_RESULTS = 10;
 
 export default function Search() {
   const [searchResults, setSearchResults] = useState<VideoItem[]>([]);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [totalResults, setTotalResults] = useState<number>(0);
 
   const handleSearch = async (query: string) => {
+    setSearchQuery(query);
+
     if (!query.trim()) {
       setSearchResults([]);
+      setTotalResults(0);
       return;
     }
 
@@ -21,13 +26,16 @@ export default function Search() {
       const url = `http://192.168.55.105:3000/youtube/v3/search?part=snippet&type=video&q=${encodeURIComponent(
         query
       )}&key=${YOUTUBE_API_KEY}&maxResults=${MAX_RESULTS}`;
+
       const response = await fetch(url);
       const data = await response.json();
 
       setSearchResults(data.items || []);
+      setTotalResults(data.pageInfo?.totalResults || 0);
     } catch (error) {
       console.error("Error fetching:", error);
       setSearchResults([]);
+      setTotalResults(0);
     }
   };
 
@@ -38,7 +46,26 @@ export default function Search() {
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false}>
-        {searchResults.length === 0 && (
+        {searchResults.length > 0 && (
+          <View style={styles.resultsHeader}>
+            <Text style={styles.resultsText}>
+              {totalResults} results found for:{" "}
+              <Text style={styles.resultsTextBold}>
+                {'"'}
+                {searchQuery}
+                {'"'}
+              </Text>
+            </Text>
+            <View style={styles.sortByContainer}>
+              <Text style={styles.resultsText}>
+                Sort By:{" "}
+                <Text style={styles.resultsTextBold}>Most popular</Text>
+              </Text>
+            </View>
+          </View>
+        )}
+
+        {searchResults.length === 0 && !searchQuery && (
           <View style={styles.centerContainer}>
             <Text style={styles.placeholderText}>
               Enter name to search video
@@ -67,8 +94,19 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   searchContainer: {
-    marginVertical: 40,
-    marginHorizontal: 24,
+    marginTop: 40,
+    marginBottom: 25,
+  },
+  resultsHeader: {
+    paddingHorizontal: 24,
+  },
+  resultsText: {
+    fontFamily: "Poppins-Regular",
+    color: "#2B2D42",
+    fontSize: 10,
+  },
+  resultsTextBold: {
+    fontFamily: "Poppins-Bold",
   },
   centerContainer: {
     flex: 1,
@@ -76,16 +114,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     minHeight: 300,
   },
-  emptyText: {
-    fontFamily: "Poppins-Regular",
-    fontSize: 14,
-    color: "#999",
-    textAlign: "center",
-  },
   placeholderText: {
     fontFamily: "Poppins-Regular",
     fontSize: 16,
     color: "#CCCCCC",
     textAlign: "center",
+  },
+  sortByContainer: {
+    marginTop: 2,
+    alignItems: "flex-end",
   },
 });
