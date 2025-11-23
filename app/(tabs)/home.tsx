@@ -82,7 +82,11 @@ export default function Home() {
       <ScrollView showsVerticalScrollIndicator={false}>
         {categories.map((category, index) => (
           <View key={index}>
-            <Text style={styles.title}>{category.name}</Text>
+            <View style={styles.titleContainer}>
+              <Text style={styles.title}>{category.name}</Text>
+              <Text style={styles.showMore}>Show more</Text>
+            </View>
+
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               {category.videos.map((video) => (
                 <Card
@@ -113,6 +117,12 @@ const styles = StyleSheet.create({
   icon: {
     marginRight: 24,
   },
+  titleContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginRight: 24,
+    justifyContent: "space-between",
+  },
   title: {
     fontFamily: "Poppins-Bold",
     fontWeight: "800",
@@ -120,5 +130,8 @@ const styles = StyleSheet.create({
     marginLeft: 24,
     marginTop: 16,
     marginBottom: 8,
+  },
+  showMore: {
+    textDecorationLine: "underline",
   },
 });
