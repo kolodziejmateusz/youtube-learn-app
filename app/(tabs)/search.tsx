@@ -1,22 +1,9 @@
 import Card from "@/components/Card";
 import SearchInput from "@/components/SearchInput";
+import { VideoItem } from "@/types/VideoItem";
+import { formatDate } from "@/utils/formatDate";
 import { useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
-
-type VideoItem = {
-  id: {
-    videoId: string;
-  };
-  snippet: {
-    title: string;
-    thumbnails: {
-      high: {
-        url: string;
-      };
-    };
-    publishedAt: string;
-  };
-};
 
 const YOUTUBE_API_KEY = process.env.EXPO_PUBLIC_YOUTUBE_API_KEY;
 const MAX_RESULTS = 10;
@@ -72,11 +59,6 @@ export default function Search() {
     </View>
   );
 }
-
-const formatDate = (isoDate: string): string => {
-  const date = new Date(isoDate);
-  return `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`;
-};
 
 const styles = StyleSheet.create({
   container: {

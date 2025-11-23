@@ -1,7 +1,7 @@
 import React from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
 
-interface CardProps {
+type CardProps = {
   title: string;
   thumbnailUrl: string;
   publishedAt: string;

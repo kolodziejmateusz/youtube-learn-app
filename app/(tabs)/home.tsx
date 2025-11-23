@@ -2,6 +2,8 @@ import SettingsIcon from "@/assets/icons/settings-icon.svg";
 import Card from "@/components/Card";
 import Divider from "@/components/Divider";
 import SearchInput from "@/components/SearchInput";
+import { VideoItem } from "@/types/VideoItem";
+import { formatDate } from "@/utils/formatDate";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import {
@@ -11,21 +13,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-
-type VideoItem = {
-  id: {
-    videoId: string;
-  };
-  snippet: {
-    title: string;
-    thumbnails: {
-      high: {
-        url: string;
-      };
-    };
-    publishedAt: string;
-  };
-};
 
 type Category = {
   name: string;
@@ -113,11 +100,6 @@ export default function Home() {
     </>
   );
 }
-
-const formatDate = (isoDate: string): string => {
-  const date = new Date(isoDate);
-  return `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`;
-};
 
 const styles = StyleSheet.create({
   container: {
