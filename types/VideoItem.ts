@@ -9,6 +9,7 @@ export type VideoItem = {
         url: string;
       };
     };
+    channelTitle: string;
     publishedAt: string;
   };
 };

@@ -4,14 +4,16 @@ import { Image, StyleSheet, Text, View } from "react-native";
 type CardProps = {
   title: string;
   thumbnailUrl: string;
+  channelTitle?: string;
   publishedAt: string;
   variant?: "horizontal" | "full";
-}
+};
 
 export default function Card({
   title,
   thumbnailUrl,
   publishedAt,
+  channelTitle,
   variant = "horizontal",
 }: CardProps) {
   return (
@@ -25,6 +27,9 @@ export default function Card({
         }}
       />
       <View style={styles.textContainer}>
+        {channelTitle && (
+          <Text style={styles.channelTitle}>{channelTitle}</Text>
+        )}
         <Text
           style={[styles.text, variant === "full" && styles.textFull]}
           numberOfLines={2}
@@ -73,5 +78,8 @@ const styles = StyleSheet.create({
     fontSize: 13,
     alignSelf: "flex-end",
     marginTop: 4,
+  },
+  channelTitle: {
+    fontFamily: "Poppins-Bold",
   },
 });

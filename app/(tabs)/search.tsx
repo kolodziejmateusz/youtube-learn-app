@@ -52,6 +52,7 @@ export default function Search() {
             title={video.snippet.title}
             thumbnailUrl={video.snippet.thumbnails.high.url}
             publishedAt={formatDate(video.snippet.publishedAt)}
+            channelTitle={video.snippet.channelTitle}
             variant="full"
           />
         ))}
