@@ -1,25 +1,29 @@
 import Card from "@/components/Card";
 import SearchInput from "@/components/SearchInput";
+import SortModal, { SortOption } from "@/components/SortModal";
 import { VideoItem } from "@/types/VideoItem";
 import { formatDate } from "@/utils/formatDate";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
 const YOUTUBE_API_KEY = process.env.EXPO_PUBLIC_YOUTUBE_API_KEY;
 const MAX_RESULTS = 10;
 
 export default function Search() {
   const { query: initialQuery } = useLocalSearchParams();
+
+  const [searchResults, setSearchResults] = useState<VideoItem[]>([]);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [totalResults, setTotalResults] = useState<number>(0);
+  const [sortOption, setSortOption] = useState<SortOption>("popular");
+  const [modalVisible, setModalVisible] = useState(false);
+
   useEffect(() => {
     if (initialQuery && typeof initialQuery === "string") {
       handleSearch(initialQuery);
     }
   }, [initialQuery]);
-
-  const [searchResults, setSearchResults] = useState<VideoItem[]>([]);
-  const [searchQuery, setSearchQuery] = useState<string>("");
-  const [totalResults, setTotalResults] = useState<number>(0);
 
   const handleSearch = async (query: string) => {
     setSearchQuery(query);
@@ -31,7 +35,7 @@ export default function Search() {
     }
 
     try {
-      const url = `http://192.168.55.105:3000/youtube/v3/search?part=snippet&type=video&q=${encodeURIComponent(
+      const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&q=${encodeURIComponent(
         query
       )}&key=${YOUTUBE_API_KEY}&maxResults=${MAX_RESULTS}`;
 
@@ -46,6 +50,41 @@ export default function Search() {
       setTotalResults(0);
     }
   };
+
+  const getSortedResults = () => {
+    const sorted = [...searchResults];
+
+    if (sortOption === "latest") {
+      return sorted.sort(
+        (a, b) =>
+          new Date(b.snippet.publishedAt).getTime() -
+          new Date(a.snippet.publishedAt).getTime()
+      );
+    }
+
+    if (sortOption === "oldest") {
+      return sorted.sort(
+        (a, b) =>
+          new Date(a.snippet.publishedAt).getTime() -
+          new Date(b.snippet.publishedAt).getTime()
+      );
+    }
+
+    return sorted;
+  };
+
+  const getSortLabel = () => {
+    switch (sortOption) {
+      case "latest":
+        return "Upload date: latest";
+      case "oldest":
+        return "Upload date: oldest";
+      case "popular":
+        return "Most popular";
+    }
+  };
+
+  const sortedResults = getSortedResults();
 
   return (
     <View style={styles.container}>
@@ -64,12 +103,15 @@ export default function Search() {
                 {'"'}
               </Text>
             </Text>
-            <View style={styles.sortByContainer}>
+            <Pressable
+              style={styles.sortByContainer}
+              onPress={() => setModalVisible(true)}
+            >
               <Text style={styles.resultsText}>
                 Sort By:{" "}
-                <Text style={styles.resultsTextBold}>Most popular</Text>
+                <Text style={styles.resultsTextBold}>{getSortLabel()}</Text>
               </Text>
-            </View>
+            </Pressable>
           </View>
         )}
 
@@ -81,7 +123,7 @@ export default function Search() {
           </View>
         )}
 
-        {searchResults.map((video) => (
+        {sortedResults.map((video) => (
           <Card
             key={video.id.videoId}
             id={video.id.videoId}
@@ -93,6 +135,13 @@ export default function Search() {
           />
         ))}
       </ScrollView>
+
+      <SortModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        onSortSelect={setSortOption}
+        selectedSort={sortOption}
+      />
     </View>
   );
 }
@@ -132,5 +181,6 @@ const styles = StyleSheet.create({
   sortByContainer: {
     marginTop: 2,
     alignItems: "flex-end",
+    paddingVertical: 8,
   },
 });
