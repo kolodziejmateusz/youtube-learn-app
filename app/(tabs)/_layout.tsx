@@ -1,5 +1,6 @@
 import HomeIcon from "@/assets/icons/home-icon.svg";
 import SearchIcon from "@/assets/icons/search-icon.svg";
+import { COLORS } from "@/constants/theme";
 import { Tabs } from "expo-router";
 import React from "react";
 
@@ -9,12 +10,12 @@ export default function TabLayout() {
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: "#8D99AE",
+          backgroundColor: COLORS.backgroundLight,
           paddingTop: 10,
-          height: 70,  
+          height: 70,
         },
-        tabBarActiveTintColor: "#2B2D42",
-        tabBarInactiveTintColor: "white",
+        tabBarActiveTintColor: COLORS.text.primary,
+        tabBarInactiveTintColor: COLORS.text.white,
       }}
     >
       <Tabs.Screen

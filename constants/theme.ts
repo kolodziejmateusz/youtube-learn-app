@@ -6,7 +6,7 @@ export const COLORS = {
   backgroundLightCard: "#acebf5ff",
   text: {
     primary: "#2B2D42",
-    white: "FFFFFF"
+    white: "#FFFFFF"
   },
 };
 
