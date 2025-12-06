@@ -2,6 +2,15 @@ import LikesIcon from "@/assets/icons/likes-icon.svg";
 import PersonIcon from "@/assets/icons/person-icon.svg";
 import ViewsIcon from "@/assets/icons/views-icon.svg";
 import VideoPlayer from "@/components/VideoPlayer";
+import {
+  COLORS,
+  SPACING,
+  FONTS,
+  FONT_SIZES,
+  DIMENSIONS,
+  BORDER_RADIUS,
+  LAYOUT,
+} from "@/constants/theme";
 import { useVideoDetails } from "@/hooks/useVideoDetails";
 import { useLocalSearchParams } from "expo-router";
 import React from "react";
@@ -20,7 +29,7 @@ export default function Video() {
   if (loading) {
     return (
       <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color="#2B8AC2" />
+        <ActivityIndicator size="large" color={COLORS.loading} />
       </View>
     );
   }
@@ -75,67 +84,67 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    margin: 30,
-    marginTop: 20,
+    margin: LAYOUT.contentMargin,
+    marginTop: SPACING.xl,
   },
   title: {
     fontWeight: "bold",
-    fontSize: 22,
-    marginBottom: 8,
+    fontSize: FONT_SIZES.xl,
+    marginBottom: SPACING.md,
   },
   channelRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginVertical: 20,
+    marginVertical: SPACING.xl,
   },
   avatar: {
-    width: 60,
-    height: 60,
-    backgroundColor: "#acebf5ff",
-    borderRadius: 35,
-    marginRight: 12,
+    width: DIMENSIONS.avatarSize,
+    height: DIMENSIONS.avatarSize,
+    backgroundColor: COLORS.backgroundLightCard,
+    borderRadius: DIMENSIONS.avatarRadius,
+    marginRight: SPACING.lg,
     justifyContent: "center",
     alignItems: "center",
   },
   channelName: {
-    fontFamily: "Poppins-Bold",
-    fontSize: 16,
-    color: "#21233A",
+    fontFamily: FONTS.bold,
+    fontSize: FONT_SIZES.lg,
+    color: COLORS.text.primary,
   },
   sectionTitle: {
     fontWeight: "bold",
-    color: "#21233A",
-    marginTop: 14,
-    marginBottom: 4,
+    color: COLORS.text.primary,
+    marginTop: SPACING.lg,
+    marginBottom: SPACING.sm,
   },
   description: {
-    fontSize: 14,
-    color: "#333",
-    marginBottom: 10,
+    fontSize: FONT_SIZES.md,
+    color: COLORS.text.primary,
+    marginBottom: SPACING.md,
   },
   statsRow: {
-    marginTop: 10,
+    marginTop: SPACING.md,
     flexDirection: "row",
-    gap: 16,
+    gap: LAYOUT.statsGap,
   },
   statBox: {
     flex: 1,
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    gap: 10,
-    backgroundColor: "#acebf5ff",
-    borderRadius: 12,
-    padding: 7,
+    gap: SPACING.md,
+    backgroundColor: COLORS.backgroundLightCard,
+    borderRadius: BORDER_RADIUS.card,
+    padding: SPACING.sm,
   },
   statValue: {
-    color: "black",
+    color: COLORS.primary,
     fontWeight: "500",
-    fontSize: 12,
+    fontSize: FONT_SIZES.sm,
     textAlign: "center",
   },
   errorText: {
-    color: "red",
-    fontSize: 16,
+    color: COLORS.loading,
+    fontSize: FONT_SIZES.lg,
   },
 });

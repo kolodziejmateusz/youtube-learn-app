@@ -1,7 +1,7 @@
 import Button from "@/components/Button";
 import { useRouter } from "expo-router";
 import { Image, Linking, StyleSheet, Text, View } from "react-native";
-import { COLORS, SPACING, FONTS, FONT_SIZES, LAYOUT } from "@/constants/theme";
+import { COLORS, FONTS, FONT_SIZES, LAYOUT } from "@/constants/theme";
 
 export default function Welcome() {
   const router = useRouter();
