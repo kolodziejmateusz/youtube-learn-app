@@ -32,7 +32,7 @@ export default function Video() {
 
   const fetchVideoDetails = async (videoId: string) => {
     try {
-      const url = `https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics&id=${videoId}&key=${YOUTUBE_API_KEY}`;
+      const url = `http://192.168.55.106:3000/youtube/v3/videos?part=snippet,statistics&id=${videoId}&key=${YOUTUBE_API_KEY}`;
 
       const response = await fetch(url);
       const data = await response.json();

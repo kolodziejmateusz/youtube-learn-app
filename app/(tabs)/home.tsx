@@ -45,7 +45,7 @@ export default function Home() {
 
   const fetchVideos = async (category: Category): Promise<Category> => {
     try {
-      const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&q=${encodeURIComponent(
+      const url = `http://192.168.55.106:3000/youtube/v3/search?part=snippet&type=video&q=${encodeURIComponent(
         category.query
       )}&key=${YOUTUBE_API_KEY}&maxResults=${MAX_RESULTS}`;
 
