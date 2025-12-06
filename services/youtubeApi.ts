@@ -3,6 +3,12 @@ const baseUrl = "http://192.168.55.106:3000/youtube/v3";
 
 const youtubeAPIKey = process.env.EXPO_PUBLIC_YOUTUBE_API_KEY;
 
+if (!youtubeAPIKey) {
+  throw new Error(
+    "YouTube API key is missing. Set EXPO_PUBLIC_YOUTUBE_API_KEY in your environment variables."
+  );
+}
+
 type SearchParams = {
   query: string;
   maxResults?: number;
