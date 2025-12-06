@@ -1,6 +1,7 @@
 import Card from "@/components/Card";
 import SearchInput from "@/components/SearchInput";
 import SortModal, { SortOption } from "@/components/SortModal";
+import { COLORS, SPACING, FONTS, FONT_SIZES, LAYOUT } from "@/constants/theme";
 import { useYoutubeSearch } from "@/hooks/useYoutubeSearch";
 import { formatDate } from "@/utils/formatDate";
 import { useLocalSearchParams } from "expo-router";
@@ -99,7 +100,7 @@ export default function Search() {
 
         {loading && (
           <View style={styles.centerContainer}>
-            <ActivityIndicator size="large" color="#2B8AC2" />
+            <ActivityIndicator size="large" color={COLORS.loading} />
           </View>
         )}
 
@@ -141,22 +142,22 @@ export default function Search() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: COLORS.light,
   },
   searchContainer: {
-    marginTop: 60,
-    marginBottom: 25,
+    marginTop: LAYOUT.topMargin,
+    marginBottom: LAYOUT.bottomMargin,
   },
   resultsHeader: {
-    paddingHorizontal: 24,
+    paddingHorizontal: SPACING.xxxl,
   },
   resultsText: {
-    fontFamily: "Poppins-Regular",
-    color: "#2B2D42",
-    fontSize: 10,
+    fontFamily: FONTS.regular,
+    color: COLORS.text.primary,
+    fontSize: FONT_SIZES.xs,
   },
   resultsTextBold: {
-    fontFamily: "Poppins-Bold",
+    fontFamily: FONTS.bold,
   },
   centerContainer: {
     flex: 1,
@@ -165,14 +166,14 @@ const styles = StyleSheet.create({
     minHeight: 300,
   },
   placeholderText: {
-    fontFamily: "Poppins-Regular",
-    fontSize: 16,
-    color: "#CCCCCC",
+    fontFamily: FONTS.regular,
+    fontSize: FONT_SIZES.lg,
+    color: COLORS.primary,
     textAlign: "center",
   },
   sortByContainer: {
-    marginTop: 2,
+    marginTop: SPACING.sm,
     alignItems: "flex-end",
-    paddingVertical: 8,
+    paddingVertical: SPACING.md,
   },
 });

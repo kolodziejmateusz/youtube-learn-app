@@ -2,6 +2,7 @@ import SettingsIcon from "@/assets/icons/settings-icon.svg";
 import Card from "@/components/Card";
 import Divider from "@/components/Divider";
 import SearchInput from "@/components/SearchInput";
+import { COLORS, SPACING, FONTS, LAYOUT, FONT_SIZES } from "@/constants/theme";
 import { useCategories } from "@/hooks/useCategories";
 import { formatDate } from "@/utils/formatDate";
 import { useRouter } from "expo-router";
@@ -21,7 +22,7 @@ export default function Home() {
   if (loading) {
     return (
       <View style={styles.loading}>
-        <ActivityIndicator size="large" color="#2B8AC2" />
+        <ActivityIndicator size="large" color={COLORS.loading} />
       </View>
     );
   }
@@ -88,28 +89,28 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 60,
-    marginBottom: 25,
+    marginTop: LAYOUT.topMargin,
+    marginBottom: LAYOUT.bottomMargin,
   },
   inputContainer: {
     flex: 1,
   },
   icon: {
-    marginRight: 24,
+    marginRight: SPACING.xxxl,
   },
   titleContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginRight: 24,
+    marginRight: SPACING.xxxl,
     justifyContent: "space-between",
   },
   title: {
-    fontFamily: "Poppins-Bold",
+    fontFamily: FONTS.bold,
     fontWeight: "800",
-    fontSize: 22,
-    marginLeft: 24,
-    marginTop: 16,
-    marginBottom: 8,
+    fontSize: FONT_SIZES.xl,
+    marginLeft: SPACING.xxxl,
+    marginTop: SPACING.lg,
+    marginBottom: SPACING.md,
   },
   showMore: {
     textDecorationLine: "underline",
