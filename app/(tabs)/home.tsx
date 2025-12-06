@@ -2,11 +2,11 @@ import SettingsIcon from "@/assets/icons/settings-icon.svg";
 import Card from "@/components/Card";
 import Divider from "@/components/Divider";
 import SearchInput from "@/components/SearchInput";
-import { VideoItem } from "@/types/VideoItem";
+import { useCategories } from "@/hooks/useCategories";
 import { formatDate } from "@/utils/formatDate";
 import { useRouter } from "expo-router";
-import { useEffect, useState } from "react";
 import {
+  ActivityIndicator,
   ScrollView,
   StyleSheet,
   Text,
@@ -14,56 +14,17 @@ import {
   View,
 } from "react-native";
 
-type Category = {
-  name: string;
-  query: string;
-  videos: VideoItem[];
-};
-
 export default function Home() {
   const router = useRouter();
-  const [categories, setCategories] = useState<Category[]>([
-    { name: "React Native", query: "React Native", videos: [] },
-    { name: "React", query: "React.js", videos: [] },
-    { name: "TypeScript", query: "TypeScript", videos: [] },
-    { name: "Javascript", query: "Javascript", videos: [] },
-  ]);
+  const { categories, loading } = useCategories();
 
-  const YOUTUBE_API_KEY = process.env.EXPO_PUBLIC_YOUTUBE_API_KEY;
-  const MAX_RESULTS = 4;
-
-  useEffect(() => {
-    fetchAllCategories();
-  }, []);
-
-  const fetchAllCategories = async () => {
-    const updatedCategories = await Promise.all(
-      categories.map((category) => fetchVideos(category))
+  if (loading) {
+    return (
+      <View style={styles.loading}>
+        <ActivityIndicator size="large" color="#2B8AC2" />
+      </View>
     );
-    setCategories(updatedCategories);
-  };
-
-  const fetchVideos = async (category: Category): Promise<Category> => {
-    try {
-      const url = `http://192.168.55.106:3000/youtube/v3/search?part=snippet&type=video&q=${encodeURIComponent(
-        category.query
-      )}&key=${YOUTUBE_API_KEY}&maxResults=${MAX_RESULTS}`;
-
-      const response = await fetch(url);
-      const data = await response.json();
-
-      return {
-        ...category,
-        videos: data.items || [],
-      };
-    } catch (error) {
-      console.error(`Error fetching ${category.name}:`, error);
-      return {
-        ...category,
-        videos: [],
-      };
-    }
-  };
+  }
 
   return (
     <>
@@ -119,6 +80,11 @@ export default function Home() {
 }
 
 const styles = StyleSheet.create({
+  loading: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   container: {
     flexDirection: "row",
     alignItems: "center",

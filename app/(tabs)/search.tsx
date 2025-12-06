@@ -1,21 +1,24 @@
 import Card from "@/components/Card";
 import SearchInput from "@/components/SearchInput";
 import SortModal, { SortOption } from "@/components/SortModal";
-import { VideoItem } from "@/types/VideoItem";
+import { useYoutubeSearch } from "@/hooks/useYoutubeSearch";
 import { formatDate } from "@/utils/formatDate";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-
-const YOUTUBE_API_KEY = process.env.EXPO_PUBLIC_YOUTUBE_API_KEY;
-const MAX_RESULTS = 10;
+import {
+  ActivityIndicator,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 
 export default function Search() {
   const { query: initialQuery } = useLocalSearchParams();
+  const { results, totalResults, loading, search } = useYoutubeSearch();
 
-  const [searchResults, setSearchResults] = useState<VideoItem[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [totalResults, setTotalResults] = useState<number>(0);
   const [sortOption, setSortOption] = useState<SortOption>("popular");
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -27,32 +30,11 @@ export default function Search() {
 
   const handleSearch = async (query: string) => {
     setSearchQuery(query);
-
-    if (!query.trim()) {
-      setSearchResults([]);
-      setTotalResults(0);
-      return;
-    }
-
-    try {
-      const url = `http://192.168.55.106:3000/youtube/v3/search?part=snippet&type=video&q=${encodeURIComponent(
-        query
-      )}&key=${YOUTUBE_API_KEY}&maxResults=${MAX_RESULTS}`;
-
-      const response = await fetch(url);
-      const data = await response.json();
-
-      setSearchResults(data.items || []);
-      setTotalResults(data.pageInfo?.totalResults || 0);
-    } catch (error) {
-      console.error("Error fetching:", error);
-      setSearchResults([]);
-      setTotalResults(0);
-    }
+    await search(query);
   };
 
   const getSortedResults = () => {
-    const sorted = [...searchResults];
+    const sorted = [...results];
 
     if (sortOption === "latest") {
       return sorted.sort(
@@ -93,7 +75,7 @@ export default function Search() {
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false}>
-        {searchResults.length > 0 && (
+        {results.length > 0 && (
           <View style={styles.resultsHeader}>
             <Text style={styles.resultsText}>
               {totalResults} results found for:{" "}
@@ -115,7 +97,13 @@ export default function Search() {
           </View>
         )}
 
-        {searchResults.length === 0 && !searchQuery && (
+        {loading && (
+          <View style={styles.centerContainer}>
+            <ActivityIndicator size="large" color="#2B8AC2" />
+          </View>
+        )}
+
+        {results.length === 0 && !searchQuery && !loading && (
           <View style={styles.centerContainer}>
             <Text style={styles.placeholderText}>
               Enter name to search video

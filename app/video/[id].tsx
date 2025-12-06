@@ -2,62 +2,35 @@ import LikesIcon from "@/assets/icons/likes-icon.svg";
 import PersonIcon from "@/assets/icons/person-icon.svg";
 import ViewsIcon from "@/assets/icons/views-icon.svg";
 import VideoPlayer from "@/components/VideoPlayer";
+import { useVideoDetails } from "@/hooks/useVideoDetails";
 import { useLocalSearchParams } from "expo-router";
-import React, { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
-
-type VideoDetails = {
-  id: string;
-  title: string;
-  channelTitle: string;
-  description: string;
-  viewCount: string;
-  likeCount: string;
-  thumbnailUrl: string;
-  publishedAt: string;
-};
+import React from "react";
+import {
+  ActivityIndicator,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 
 export default function Video() {
   const { id } = useLocalSearchParams<{ id: string }>();
+  const { video, loading } = useVideoDetails(id);
 
-  const [video, setVideo] = useState<VideoDetails | null>(null);
-
-  const YOUTUBE_API_KEY = process.env.EXPO_PUBLIC_YOUTUBE_API_KEY;
-
-  useEffect(() => {
-    if (id) {
-      fetchVideoDetails(id);
-    }
-  }, [id]);
-
-  const fetchVideoDetails = async (videoId: string) => {
-    try {
-      const url = `http://192.168.55.106:3000/youtube/v3/videos?part=snippet,statistics&id=${videoId}&key=${YOUTUBE_API_KEY}`;
-
-      const response = await fetch(url);
-      const data = await response.json();
-
-      const item = data.items[0];
-      const snippet = item.snippet;
-      const statistics = item.statistics;
-
-      setVideo({
-        id: videoId,
-        title: snippet.title,
-        channelTitle: snippet.channelTitle,
-        description: snippet.description,
-        viewCount: statistics.viewCount,
-        likeCount: statistics.likeCount,
-        thumbnailUrl: snippet.thumbnails.high.url,
-        publishedAt: snippet.publishedAt,
-      });
-    } catch (err) {
-      console.error("Error fetching video details:", err);
-    }
-  };
+  if (loading) {
+    return (
+      <View style={styles.centerContainer}>
+        <ActivityIndicator size="large" color="#2B8AC2" />
+      </View>
+    );
+  }
 
   if (!video) {
-    return <Text>Loading</Text>;
+    return (
+      <View style={styles.centerContainer}>
+        <Text style={styles.errorText}>{"Video not found"}</Text>
+      </View>
+    );
   }
 
   return (
@@ -93,6 +66,11 @@ export default function Video() {
 }
 
 const styles = StyleSheet.create({
+  centerContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   scrollContainer: {
     flex: 1,
   },
@@ -155,5 +133,9 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     fontSize: 12,
     textAlign: "center",
+  },
+  errorText: {
+    color: "red",
+    fontSize: 16,
   },
 });
