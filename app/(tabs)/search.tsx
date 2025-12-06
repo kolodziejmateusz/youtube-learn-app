@@ -103,7 +103,7 @@ export default function Search() {
           </View>
         )}
 
-        {results.length === 0 && !searchQuery && !loading && (
+        {!loading && results.length === 0 && !searchQuery && (
           <View style={styles.centerContainer}>
             <Text style={styles.placeholderText}>
               Enter name to search video
@@ -111,17 +111,21 @@ export default function Search() {
           </View>
         )}
 
-        {sortedResults.map((video) => (
-          <Card
-            key={video.id.videoId}
-            id={video.id.videoId}
-            title={video.snippet.title}
-            thumbnailUrl={video.snippet.thumbnails.high.url}
-            publishedAt={formatDate(video.snippet.publishedAt)}
-            channelTitle={video.snippet.channelTitle}
-            variant="full"
-          />
-        ))}
+        {!loading && sortedResults.length > 0 && (
+          <>
+            {sortedResults.map((video) => (
+              <Card
+                key={video.id.videoId}
+                id={video.id.videoId}
+                title={video.snippet.title}
+                thumbnailUrl={video.snippet.thumbnails.high.url}
+                publishedAt={formatDate(video.snippet.publishedAt)}
+                channelTitle={video.snippet.channelTitle}
+                variant="full"
+              />
+            ))}
+          </>
+        )}
       </ScrollView>
 
       <SortModal
