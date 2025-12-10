@@ -1,5 +1,5 @@
 import SearchIcon from "@/assets/icons/search-icon.svg";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
 import {
   COLORS,
@@ -20,11 +20,15 @@ export default function SearchInput({
 }: SearchInputProps) {
   const [searchQuery, setSearchQuery] = useState<string>("");
 
-  const handleSearch = () => {
-    if (searchQuery.trim() && onSearch) {
-      onSearch(searchQuery);
-    }
-  };
+  const handleChangeText = useCallback(
+    (text: string) => {
+      setSearchQuery(text);
+      if (onSearch) {
+        onSearch(text);
+      }
+    },
+    [onSearch]
+  );
 
   return (
     <View style={styles.container}>
@@ -35,8 +39,8 @@ export default function SearchInput({
           placeholder="Search videos"
           placeholderTextColor={COLORS.text.primary}
           value={searchQuery}
-          onChangeText={setSearchQuery}
-          onSubmitEditing={handleSearch}
+          onChangeText={handleChangeText}
+          returnKeyType="search"
         />
       ) : (
         <Text style={styles.disabledText}>Search videos</Text>

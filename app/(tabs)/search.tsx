@@ -3,6 +3,7 @@ import SearchInput from "@/components/SearchInput";
 import SortModal, { SortOption } from "@/components/SortModal";
 import { COLORS, SPACING, FONTS, FONT_SIZES, LAYOUT } from "@/constants/theme";
 import { useYoutubeSearch } from "@/hooks/useYoutubeSearch";
+import { useDebounce } from "@/hooks/useDebounce";
 import { formatDate } from "@/utils/formatDate";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useRef, useState } from "react";
@@ -23,22 +24,32 @@ export default function Search() {
   const [sortOption, setSortOption] = useState<SortOption>("popular");
   const [modalVisible, setModalVisible] = useState(false);
 
+  const debouncedQuery = useDebounce(searchQuery, 500);
+
   const abortControllerRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
     if (initialQuery && typeof initialQuery === "string") {
-      handleSearch(initialQuery);
+      setSearchQuery(initialQuery);
     }
   }, [initialQuery]);
 
-  const handleSearch = async (query: string) => {
+  useEffect(() => {
+    if (debouncedQuery.trim()) {
+      performSearch(debouncedQuery);
+    } else {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    }
+  }, [debouncedQuery]);
+
+  const performSearch = async (query: string) => {
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
     }
 
     abortControllerRef.current = new AbortController();
-
-    setSearchQuery(query);
     await search(query, 10, abortControllerRef.current.signal);
   };
 
@@ -88,7 +99,7 @@ export default function Search() {
   return (
     <View style={styles.container}>
       <View style={styles.searchContainer}>
-        <SearchInput onSearch={handleSearch} />
+        <SearchInput onSearch={setSearchQuery} />
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false}>
