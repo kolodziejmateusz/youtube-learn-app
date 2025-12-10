@@ -32,37 +32,66 @@ export const useCategories = (maxResults = 4): UseCategoriesReturn => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let isMounted = true;
+    const abortControllers = initialCategories.map(() => new AbortController());
+
     const fetchAllCategories = async () => {
+      if (!isMounted) return;
       setLoading(true);
 
       const updatedCategories = await Promise.all(
-        categories.map(async (category) => {
+        categories.map(async (category, index) => {
           try {
-            const data = await youtubeApi.searchVideos({
-              query: category.query,
-              maxResults,
-            });
-            return {
-              ...category,
-              videos: data.items || [],
-              loading: false,
-            };
+            const data = await youtubeApi.searchVideos(
+              {
+                query: category.query,
+                maxResults,
+              },
+              abortControllers[index].signal
+            );
+
+            if (isMounted && !abortControllers[index].signal.aborted) {
+              return {
+                ...category,
+                videos: data.items || [],
+                loading: false,
+              };
+            }
+
+            return category;
           } catch (err) {
+            if (err instanceof Error && err.name === "AbortError") {
+              console.log(`Category ${category.name} fetch cancelled`);
+              return category;
+            }
+
             console.error(`Error fetching ${category.name}:`, err);
-            return {
-              ...category,
-              videos: [],
-              loading: false,
-            };
+
+            if (isMounted) {
+              return {
+                ...category,
+                videos: [],
+                loading: false,
+              };
+            }
+
+            return category;
           }
         })
       );
 
-      setCategories(updatedCategories);
-      setLoading(false);
+      if (isMounted) {
+        setCategories(updatedCategories);
+        setLoading(false);
+      }
     };
 
     fetchAllCategories();
+
+    return () => {
+      isMounted = false;
+      abortControllers.forEach((controller) => controller.abort());
+    };
   }, [maxResults]);
 
   return { categories, loading };

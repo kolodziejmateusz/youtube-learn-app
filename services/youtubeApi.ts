@@ -1,5 +1,5 @@
 // const baseUrl = "https://www.googleapis.com/youtube/v3";
-const baseUrl = "http://192.168.55.106:3000/youtube/v3";
+const baseUrl = "http://192.168.55.103:3000/youtube/v3";
 
 const youtubeAPIKey = process.env.EXPO_PUBLIC_YOUTUBE_API_KEY;
 
@@ -19,23 +19,40 @@ type VideoDetailsParams = {
 };
 
 export const youtubeApi = {
-  searchVideos: async (params: SearchParams) => {
+  searchVideos: async (params: SearchParams, signal?: AbortSignal) => {
     const { query, maxResults = 10 } = params;
 
     const url = `${baseUrl}/search?part=snippet&type=video&q=${encodeURIComponent(
       query
     )}&key=${youtubeAPIKey}&maxResults=${maxResults}`;
 
-    const response = await fetch(url);
-    if (!response.ok) throw new Error("Failed to fetch search results");
-    return response.json();
+    try {
+      const response = await fetch(url, { signal });
+      if (!response.ok) throw new Error("Failed to fetch search results");
+      return response.json();
+    } catch (error) {
+      if (error instanceof Error && error.name === "AbortError") {
+        throw error;
+      }
+      throw error;
+    }
   },
 
-  getVideoDetails: async ({ videoId }: VideoDetailsParams) => {
+  getVideoDetails: async (
+    { videoId }: VideoDetailsParams,
+    signal?: AbortSignal
+  ) => {
     const url = `${baseUrl}/videos?part=snippet,statistics&id=${videoId}&key=${youtubeAPIKey}`;
 
-    const response = await fetch(url);
-    if (!response.ok) throw new Error("Failed to fetch video details");
-    return response.json();
+    try {
+      const response = await fetch(url, { signal });
+      if (!response.ok) throw new Error("Failed to fetch video details");
+      return response.json();
+    } catch (error) {
+      if (error instanceof Error && error.name === "AbortError") {
+        throw error;
+      }
+      throw error;
+    }
   },
 };

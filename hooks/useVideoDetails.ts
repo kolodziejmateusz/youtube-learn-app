@@ -26,11 +26,17 @@ export const useVideoDetails = (
   useEffect(() => {
     if (!videoId) return;
 
+    let isMounted = true;
+    const abortController = new AbortController();
+
     const fetchDetails = async () => {
       setLoading(true);
 
       try {
-        const data = await youtubeApi.getVideoDetails({ videoId });
+        const data = await youtubeApi.getVideoDetails(
+          { videoId },
+          abortController.signal
+        );
         const item = data.items?.[0];
 
         if (!item) throw new Error("Video not found");
@@ -38,24 +44,42 @@ export const useVideoDetails = (
         const snippet = item.snippet;
         const statistics = item.statistics;
 
-        setVideo({
-          id: videoId,
-          title: snippet.title,
-          channelTitle: snippet.channelTitle,
-          description: snippet.description,
-          viewCount: statistics.viewCount,
-          likeCount: statistics.likeCount,
-          thumbnailUrl: snippet.thumbnails.high.url,
-          publishedAt: snippet.publishedAt,
-        });
+        if (isMounted) {
+          setVideo({
+            id: videoId,
+            title: snippet.title,
+            channelTitle: snippet.channelTitle,
+            description: snippet.description,
+            viewCount: statistics.viewCount,
+            likeCount: statistics.likeCount,
+            thumbnailUrl: snippet.thumbnails.high.url,
+            publishedAt: snippet.publishedAt,
+          });
+        }
       } catch (err) {
+        if (err instanceof Error && err.name === "AbortError") {
+          console.log("Video details fetch cancelled");
+          return;
+        }
+
         console.error("Video details error:", err);
+
+        if (isMounted) {
+          setVideo(null);
+        }
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     };
 
     fetchDetails();
+
+    return () => {
+      isMounted = false;
+      abortController.abort();
+    };
   }, [videoId]);
 
   return { video, loading };

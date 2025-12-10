@@ -5,7 +5,7 @@ import { COLORS, SPACING, FONTS, FONT_SIZES, LAYOUT } from "@/constants/theme";
 import { useYoutubeSearch } from "@/hooks/useYoutubeSearch";
 import { formatDate } from "@/utils/formatDate";
 import { useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Pressable,
@@ -23,6 +23,8 @@ export default function Search() {
   const [sortOption, setSortOption] = useState<SortOption>("popular");
   const [modalVisible, setModalVisible] = useState(false);
 
+  const abortControllerRef = useRef<AbortController | null>(null);
+
   useEffect(() => {
     if (initialQuery && typeof initialQuery === "string") {
       handleSearch(initialQuery);
@@ -30,9 +32,23 @@ export default function Search() {
   }, [initialQuery]);
 
   const handleSearch = async (query: string) => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+
+    abortControllerRef.current = new AbortController();
+
     setSearchQuery(query);
-    await search(query);
+    await search(query, 10, abortControllerRef.current.signal);
   };
+
+  useEffect(() => {
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
+  }, []);
 
   const getSortedResults = () => {
     const sorted = [...results];
