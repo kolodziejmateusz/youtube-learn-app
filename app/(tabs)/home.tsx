@@ -46,7 +46,7 @@ export default function Home() {
 
       <ScrollView showsVerticalScrollIndicator={false}>
         {categories.map((category, index) => (
-          <View key={index}>
+          <View key={category.query}>
             <View style={styles.titleContainer}>
               <Text style={styles.title}>{category.name}</Text>
               <TouchableOpacity
