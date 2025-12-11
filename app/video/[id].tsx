@@ -2,62 +2,44 @@ import LikesIcon from "@/assets/icons/likes-icon.svg";
 import PersonIcon from "@/assets/icons/person-icon.svg";
 import ViewsIcon from "@/assets/icons/views-icon.svg";
 import VideoPlayer from "@/components/VideoPlayer";
+import {
+  COLORS,
+  SPACING,
+  FONTS,
+  FONT_SIZES,
+  DIMENSIONS,
+  BORDER_RADIUS,
+  LAYOUT,
+} from "@/constants/theme";
+import { useVideoDetails } from "@/hooks/useVideoDetails";
 import { useLocalSearchParams } from "expo-router";
-import React, { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
-
-type VideoDetails = {
-  id: string;
-  title: string;
-  channelTitle: string;
-  description: string;
-  viewCount: string;
-  likeCount: string;
-  thumbnailUrl: string;
-  publishedAt: string;
-};
+import React from "react";
+import {
+  ActivityIndicator,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 
 export default function Video() {
   const { id } = useLocalSearchParams<{ id: string }>();
+  const { video, loading } = useVideoDetails(id);
 
-  const [video, setVideo] = useState<VideoDetails | null>(null);
-
-  const YOUTUBE_API_KEY = process.env.EXPO_PUBLIC_YOUTUBE_API_KEY;
-
-  useEffect(() => {
-    if (id) {
-      fetchVideoDetails(id);
-    }
-  }, [id]);
-
-  const fetchVideoDetails = async (videoId: string) => {
-    try {
-      const url = `https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics&id=${videoId}&key=${YOUTUBE_API_KEY}`;
-
-      const response = await fetch(url);
-      const data = await response.json();
-
-      const item = data.items[0];
-      const snippet = item.snippet;
-      const statistics = item.statistics;
-
-      setVideo({
-        id: videoId,
-        title: snippet.title,
-        channelTitle: snippet.channelTitle,
-        description: snippet.description,
-        viewCount: statistics.viewCount,
-        likeCount: statistics.likeCount,
-        thumbnailUrl: snippet.thumbnails.high.url,
-        publishedAt: snippet.publishedAt,
-      });
-    } catch (err) {
-      console.error("Error fetching video details:", err);
-    }
-  };
+  if (loading) {
+    return (
+      <View style={styles.centerContainer}>
+        <ActivityIndicator size="large" color={COLORS.loading} />
+      </View>
+    );
+  }
 
   if (!video) {
-    return <Text>Loading</Text>;
+    return (
+      <View style={styles.centerContainer}>
+        <Text style={styles.errorText}>{"Video not found"}</Text>
+      </View>
+    );
   }
 
   return (
@@ -93,67 +75,76 @@ export default function Video() {
 }
 
 const styles = StyleSheet.create({
+  centerContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   scrollContainer: {
     flex: 1,
   },
   content: {
-    margin: 30,
-    marginTop: 20,
+    margin: LAYOUT.contentMargin,
+    marginTop: SPACING.xl,
   },
   title: {
     fontWeight: "bold",
-    fontSize: 22,
-    marginBottom: 8,
+    fontSize: FONT_SIZES.xl,
+    marginBottom: SPACING.md,
   },
   channelRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginVertical: 20,
+    marginVertical: SPACING.xl,
   },
   avatar: {
-    width: 60,
-    height: 60,
-    backgroundColor: "#acebf5ff",
-    borderRadius: 35,
-    marginRight: 12,
+    width: DIMENSIONS.avatarSize,
+    height: DIMENSIONS.avatarSize,
+    backgroundColor: COLORS.backgroundLightCard,
+    borderRadius: DIMENSIONS.avatarRadius,
+    marginRight: SPACING.lg,
     justifyContent: "center",
     alignItems: "center",
   },
   channelName: {
-    fontFamily: "Poppins-Bold",
-    fontSize: 16,
-    color: "#21233A",
+    fontFamily: FONTS.bold,
+    fontSize: FONT_SIZES.lg,
+    color: COLORS.text.primary,
   },
   sectionTitle: {
     fontWeight: "bold",
-    color: "#21233A",
-    marginTop: 14,
-    marginBottom: 4,
+    color: COLORS.text.primary,
+    marginTop: SPACING.lg,
+    marginBottom: SPACING.sm,
   },
   description: {
-    fontSize: 14,
-    color: "#333",
-    marginBottom: 10,
+    fontSize: FONT_SIZES.md,
+    color: COLORS.text.primary,
+    marginBottom: SPACING.md,
   },
   statsRow: {
-    marginTop: 10,
+    marginTop: SPACING.md,
     flexDirection: "row",
-    gap: 16,
+    gap: LAYOUT.statsGap,
   },
   statBox: {
     flex: 1,
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    gap: 10,
-    backgroundColor: "#acebf5ff",
-    borderRadius: 12,
-    padding: 7,
+    gap: SPACING.md,
+    backgroundColor: COLORS.backgroundLightCard,
+    borderRadius: BORDER_RADIUS.card,
+    padding: SPACING.sm,
   },
   statValue: {
-    color: "black",
+    color: COLORS.primary,
     fontWeight: "500",
-    fontSize: 12,
+    fontSize: FONT_SIZES.sm,
     textAlign: "center",
+  },
+  errorText: {
+    color: COLORS.loading,
+    fontSize: FONT_SIZES.lg,
   },
 });

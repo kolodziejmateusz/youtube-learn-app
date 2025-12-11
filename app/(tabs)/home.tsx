@@ -2,11 +2,12 @@ import SettingsIcon from "@/assets/icons/settings-icon.svg";
 import Card from "@/components/Card";
 import Divider from "@/components/Divider";
 import SearchInput from "@/components/SearchInput";
-import { VideoItem } from "@/types/VideoItem";
+import { COLORS, SPACING, FONTS, LAYOUT, FONT_SIZES } from "@/constants/theme";
+import { useCategories } from "@/hooks/useCategories";
 import { formatDate } from "@/utils/formatDate";
 import { useRouter } from "expo-router";
-import { useEffect, useState } from "react";
 import {
+  ActivityIndicator,
   ScrollView,
   StyleSheet,
   Text,
@@ -14,56 +15,17 @@ import {
   View,
 } from "react-native";
 
-type Category = {
-  name: string;
-  query: string;
-  videos: VideoItem[];
-};
-
 export default function Home() {
   const router = useRouter();
-  const [categories, setCategories] = useState<Category[]>([
-    { name: "React Native", query: "React Native", videos: [] },
-    { name: "React", query: "React.js", videos: [] },
-    { name: "TypeScript", query: "TypeScript", videos: [] },
-    { name: "Javascript", query: "Javascript", videos: [] },
-  ]);
+  const { categories, loading } = useCategories();
 
-  const YOUTUBE_API_KEY = process.env.EXPO_PUBLIC_YOUTUBE_API_KEY;
-  const MAX_RESULTS = 4;
-
-  useEffect(() => {
-    fetchAllCategories();
-  }, []);
-
-  const fetchAllCategories = async () => {
-    const updatedCategories = await Promise.all(
-      categories.map((category) => fetchVideos(category))
+  if (loading) {
+    return (
+      <View style={styles.loading}>
+        <ActivityIndicator size="large" color={COLORS.loading} />
+      </View>
     );
-    setCategories(updatedCategories);
-  };
-
-  const fetchVideos = async (category: Category): Promise<Category> => {
-    try {
-      const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&q=${encodeURIComponent(
-        category.query
-      )}&key=${YOUTUBE_API_KEY}&maxResults=${MAX_RESULTS}`;
-
-      const response = await fetch(url);
-      const data = await response.json();
-
-      return {
-        ...category,
-        videos: data.items || [],
-      };
-    } catch (error) {
-      console.error(`Error fetching ${category.name}:`, error);
-      return {
-        ...category,
-        videos: [],
-      };
-    }
-  };
+  }
 
   return (
     <>
@@ -84,7 +46,7 @@ export default function Home() {
 
       <ScrollView showsVerticalScrollIndicator={false}>
         {categories.map((category, index) => (
-          <View key={index}>
+          <View key={category.query}>
             <View style={styles.titleContainer}>
               <Text style={styles.title}>{category.name}</Text>
               <TouchableOpacity
@@ -119,31 +81,36 @@ export default function Home() {
 }
 
 const styles = StyleSheet.create({
+  loading: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   container: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 60,
-    marginBottom: 25,
+    marginTop: LAYOUT.topMargin,
+    marginBottom: LAYOUT.bottomMargin,
   },
   inputContainer: {
     flex: 1,
   },
   icon: {
-    marginRight: 24,
+    marginRight: SPACING.xxxl,
   },
   titleContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginRight: 24,
+    marginRight: SPACING.xxxl,
     justifyContent: "space-between",
   },
   title: {
-    fontFamily: "Poppins-Bold",
+    fontFamily: FONTS.bold,
     fontWeight: "800",
-    fontSize: 22,
-    marginLeft: 24,
-    marginTop: 16,
-    marginBottom: 8,
+    fontSize: FONT_SIZES.xl,
+    marginLeft: SPACING.xxxl,
+    marginTop: SPACING.lg,
+    marginBottom: SPACING.md,
   },
   showMore: {
     textDecorationLine: "underline",

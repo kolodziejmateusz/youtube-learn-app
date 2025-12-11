@@ -1,6 +1,14 @@
 import { useRouter } from "expo-router";
 import React from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  COLORS,
+  SPACING,
+  FONTS,
+  FONT_SIZES,
+  DIMENSIONS,
+  BORDER_RADIUS,
+} from "@/constants/theme";
 
 type CardProps = {
   id: string;
@@ -58,41 +66,41 @@ export default function Card({
 
 const styles = StyleSheet.create({
   container: {
-    marginLeft: 24,
-    marginVertical: 24,
-    width: 180,
+    marginLeft: SPACING.xxxl,
+    marginVertical: SPACING.xxxl,
+    width: DIMENSIONS.cardWidth,
   },
   containerFull: {
     width: "auto",
-    marginHorizontal: 24,
+    marginHorizontal: SPACING.xxxl,
   },
   logo: {
-    width: 180,
-    height: 100,
-    borderRadius: 12,
+    width: DIMENSIONS.cardWidth,
+    height: DIMENSIONS.cardHeight,
+    borderRadius: BORDER_RADIUS.card,
   },
   logoFull: {
     width: "100%",
-    height: 185,
+    height: DIMENSIONS.cardHeightFull,
   },
   textContainer: {
-    marginTop: 8,
+    marginTop: SPACING.md,
   },
   text: {
-    width: 180,
-    fontFamily: "Poppins-Regular",
+    width: DIMENSIONS.cardWidth,
+    fontFamily: FONTS.regular,
     fontWeight: "600",
   },
   textFull: {
     width: "100%",
   },
   date: {
-    color: "#2B2D42",
-    fontSize: 13,
+    color: COLORS.text.primary,
+    fontSize: FONT_SIZES.sm,
     alignSelf: "flex-end",
-    marginTop: 4,
+    marginTop: SPACING.sm,
   },
   channelTitle: {
-    fontFamily: "Poppins-Bold",
+    fontFamily: FONTS.bold,
   },
 });

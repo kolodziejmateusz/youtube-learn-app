@@ -1,6 +1,13 @@
 import SearchIcon from "@/assets/icons/search-icon.svg";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  COLORS,
+  SPACING,
+  FONT_SIZES,
+  DIMENSIONS,
+  BORDER_RADIUS,
+} from "@/constants/theme";
 
 interface SearchInputProps {
   onSearch?: (query: string) => void;
@@ -13,11 +20,15 @@ export default function SearchInput({
 }: SearchInputProps) {
   const [searchQuery, setSearchQuery] = useState<string>("");
 
-  const handleSearch = () => {
-    if (searchQuery.trim() && onSearch) {
-      onSearch(searchQuery);
-    }
-  };
+  const handleChangeText = useCallback(
+    (text: string) => {
+      setSearchQuery(text);
+      if (onSearch) {
+        onSearch(text);
+      }
+    },
+    [onSearch]
+  );
 
   return (
     <View style={styles.container}>
@@ -26,10 +37,10 @@ export default function SearchInput({
         <TextInput
           style={styles.input}
           placeholder="Search videos"
-          placeholderTextColor="#B3B3B3"
+          placeholderTextColor={COLORS.text.primary}
           value={searchQuery}
-          onChangeText={setSearchQuery}
-          onSubmitEditing={handleSearch}
+          onChangeText={handleChangeText}
+          returnKeyType="search"
         />
       ) : (
         <Text style={styles.disabledText}>Search videos</Text>
@@ -40,37 +51,35 @@ export default function SearchInput({
 
 const styles = StyleSheet.create({
   container: {
-    marginHorizontal: 24,
+    marginHorizontal: SPACING.xxxl,
     flexDirection: "row",
     alignItems: "center",
-    borderColor: "#2B2D42",
+    borderColor: COLORS.primary,
     borderWidth: 2,
-    borderRadius: 16,
-    paddingHorizontal: 12,
-    gap: 5,
-    backgroundColor: "white",
-    height: 44,
+    borderRadius: BORDER_RADIUS.lg,
+    paddingHorizontal: SPACING.md,
+    gap: SPACING.sm,
+    backgroundColor: COLORS.light,
+    height: DIMENSIONS.searchInputHeight,
   },
-
   input: {
     flex: 1,
-    height: 44,
-    fontSize: 16,
-    color: "#2B2D4299",
+    height: DIMENSIONS.searchInputHeight,
+    fontSize: FONT_SIZES.lg,
+    color: COLORS.text.primary,
     paddingVertical: 0,
     textAlignVertical: "center",
     margin: 0,
-    padding: 10,
+    padding: SPACING.md,
   },
-
   disabledText: {
     flex: 1,
-    fontSize: 16,
-    color: "#2B2D4299",
-    height: 44,
+    fontSize: FONT_SIZES.lg,
+    color: COLORS.text.primary,
+    height: DIMENSIONS.searchInputHeight,
     lineHeight: 22,
     textAlignVertical: "center",
-    padding: 10,
+    padding: SPACING.md,
     margin: 0,
   },
 });

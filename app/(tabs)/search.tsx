@@ -1,58 +1,68 @@
 import Card from "@/components/Card";
 import SearchInput from "@/components/SearchInput";
 import SortModal, { SortOption } from "@/components/SortModal";
-import { VideoItem } from "@/types/VideoItem";
+import { COLORS, SPACING, FONTS, FONT_SIZES, LAYOUT } from "@/constants/theme";
+import { useYoutubeSearch } from "@/hooks/useYoutubeSearch";
+import { useDebounce } from "@/hooks/useDebounce";
 import { formatDate } from "@/utils/formatDate";
 import { useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from "react";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-
-const YOUTUBE_API_KEY = process.env.EXPO_PUBLIC_YOUTUBE_API_KEY;
-const MAX_RESULTS = 10;
+import { useEffect, useRef, useState } from "react";
+import {
+  ActivityIndicator,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 
 export default function Search() {
   const { query: initialQuery } = useLocalSearchParams();
+  const { results, totalResults, loading, search } = useYoutubeSearch();
 
-  const [searchResults, setSearchResults] = useState<VideoItem[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [totalResults, setTotalResults] = useState<number>(0);
   const [sortOption, setSortOption] = useState<SortOption>("popular");
   const [modalVisible, setModalVisible] = useState(false);
 
+  const debouncedQuery = useDebounce(searchQuery, 500);
+
+  const abortControllerRef = useRef<AbortController | null>(null);
+
   useEffect(() => {
     if (initialQuery && typeof initialQuery === "string") {
-      handleSearch(initialQuery);
+      setSearchQuery(initialQuery);
     }
   }, [initialQuery]);
 
-  const handleSearch = async (query: string) => {
-    setSearchQuery(query);
+  useEffect(() => {
+    if (debouncedQuery.trim()) {
+      performSearch(debouncedQuery);
+    } else {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    }
+  }, [debouncedQuery]);
 
-    if (!query.trim()) {
-      setSearchResults([]);
-      setTotalResults(0);
-      return;
+  const performSearch = async (query: string) => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
     }
 
-    try {
-      const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&q=${encodeURIComponent(
-        query
-      )}&key=${YOUTUBE_API_KEY}&maxResults=${MAX_RESULTS}`;
-
-      const response = await fetch(url);
-      const data = await response.json();
-
-      setSearchResults(data.items || []);
-      setTotalResults(data.pageInfo?.totalResults || 0);
-    } catch (error) {
-      console.error("Error fetching:", error);
-      setSearchResults([]);
-      setTotalResults(0);
-    }
+    abortControllerRef.current = new AbortController();
+    await search(query, 10, abortControllerRef.current.signal);
   };
 
+  useEffect(() => {
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
+  }, []);
+
   const getSortedResults = () => {
-    const sorted = [...searchResults];
+    const sorted = [...results];
 
     if (sortOption === "latest") {
       return sorted.sort(
@@ -89,11 +99,11 @@ export default function Search() {
   return (
     <View style={styles.container}>
       <View style={styles.searchContainer}>
-        <SearchInput onSearch={handleSearch} />
+        <SearchInput onSearch={setSearchQuery} />
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false}>
-        {searchResults.length > 0 && (
+        {results.length > 0 && (
           <View style={styles.resultsHeader}>
             <Text style={styles.resultsText}>
               {totalResults} results found for:{" "}
@@ -115,7 +125,13 @@ export default function Search() {
           </View>
         )}
 
-        {searchResults.length === 0 && !searchQuery && (
+        {loading && (
+          <View style={styles.centerContainer}>
+            <ActivityIndicator size="large" color={COLORS.loading} />
+          </View>
+        )}
+
+        {!loading && results.length === 0 && !searchQuery && (
           <View style={styles.centerContainer}>
             <Text style={styles.placeholderText}>
               Enter name to search video
@@ -123,17 +139,21 @@ export default function Search() {
           </View>
         )}
 
-        {sortedResults.map((video) => (
-          <Card
-            key={video.id.videoId}
-            id={video.id.videoId}
-            title={video.snippet.title}
-            thumbnailUrl={video.snippet.thumbnails.high.url}
-            publishedAt={formatDate(video.snippet.publishedAt)}
-            channelTitle={video.snippet.channelTitle}
-            variant="full"
-          />
-        ))}
+        {!loading && sortedResults.length > 0 && (
+          <>
+            {sortedResults.map((video) => (
+              <Card
+                key={video.id.videoId}
+                id={video.id.videoId}
+                title={video.snippet.title}
+                thumbnailUrl={video.snippet.thumbnails.high.url}
+                publishedAt={formatDate(video.snippet.publishedAt)}
+                channelTitle={video.snippet.channelTitle}
+                variant="full"
+              />
+            ))}
+          </>
+        )}
       </ScrollView>
 
       <SortModal
@@ -149,22 +169,22 @@ export default function Search() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: COLORS.light,
   },
   searchContainer: {
-    marginTop: 60,
-    marginBottom: 25,
+    marginTop: LAYOUT.topMargin,
+    marginBottom: LAYOUT.bottomMargin,
   },
   resultsHeader: {
-    paddingHorizontal: 24,
+    paddingHorizontal: SPACING.xxxl,
   },
   resultsText: {
-    fontFamily: "Poppins-Regular",
-    color: "#2B2D42",
-    fontSize: 10,
+    fontFamily: FONTS.regular,
+    color: COLORS.text.primary,
+    fontSize: FONT_SIZES.xs,
   },
   resultsTextBold: {
-    fontFamily: "Poppins-Bold",
+    fontFamily: FONTS.bold,
   },
   centerContainer: {
     flex: 1,
@@ -173,14 +193,14 @@ const styles = StyleSheet.create({
     minHeight: 300,
   },
   placeholderText: {
-    fontFamily: "Poppins-Regular",
-    fontSize: 16,
-    color: "#CCCCCC",
+    fontFamily: FONTS.regular,
+    fontSize: FONT_SIZES.lg,
+    color: COLORS.primary,
     textAlign: "center",
   },
   sortByContainer: {
-    marginTop: 2,
+    marginTop: SPACING.sm,
     alignItems: "flex-end",
-    paddingVertical: 8,
+    paddingVertical: SPACING.md,
   },
 });

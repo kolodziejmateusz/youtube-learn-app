@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ViewStyle,
 } from "react-native";
+import { COLORS, SPACING, BORDER_RADIUS, FONT_SIZES } from "@/constants/theme";
 
 type ButtonProps = {
   children: React.ReactNode;
@@ -27,15 +28,15 @@ export default function Button({ children, onPress, style }: ButtonProps) {
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: "#2B2D42",
-    borderRadius: 12,
-    paddingVertical: 18,
+    backgroundColor: COLORS.primary,
+    borderRadius: BORDER_RADIUS.card,
+    paddingVertical: SPACING.xl,
     paddingHorizontal: 100,
   },
   text: {
-    color: "white",
+    color: COLORS.light,
     fontWeight: "600",
-    fontSize: 16,
+    fontSize: FONT_SIZES.lg,
     textAlign: "center",
   },
 });

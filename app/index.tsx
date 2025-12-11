@@ -1,6 +1,7 @@
 import Button from "@/components/Button";
 import { useRouter } from "expo-router";
 import { Image, Linking, StyleSheet, Text, View } from "react-native";
+import { COLORS, FONTS, FONT_SIZES, LAYOUT } from "@/constants/theme";
 
 export default function Welcome() {
   const router = useRouter();
@@ -50,7 +51,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "space-between",
-    backgroundColor: "#8D99AE",
+    backgroundColor: COLORS.backgroundLight,
   },
   logo: {
     marginTop: 100,
@@ -61,23 +62,23 @@ const styles = StyleSheet.create({
   },
   bottom: {
     marginBottom: 80,
-    marginHorizontal: 30,
+    marginHorizontal: LAYOUT.contentMargin,
     gap: 25,
   },
   welcomeText: {
-    fontSize: 19,
-    fontFamily: "Poppins-Bold",
+    fontSize: FONT_SIZES.xl,
+    fontFamily: FONTS.bold,
     fontWeight: "bold",
-    color: "white",
+    color: COLORS.text.white,
   },
   policyText: {
-    color: "white",
-    fontSize: 13,
+    color: COLORS.text.white,
+    fontSize: FONT_SIZES.sm,
     textAlign: "center",
-    fontFamily: "Poppins-Regular",
+    fontFamily: FONTS.regular,
   },
   policyLink: {
-    color: "#2B2D42",
+    color: COLORS.text.primary,
     textDecorationLine: "underline",
   },
 });
