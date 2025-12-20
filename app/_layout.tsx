@@ -1,6 +1,7 @@
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
+import '@/utils/i18n';
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({

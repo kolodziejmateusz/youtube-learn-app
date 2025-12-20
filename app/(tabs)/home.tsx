@@ -6,6 +6,7 @@ import { COLORS, SPACING, FONTS, LAYOUT, FONT_SIZES } from "@/constants/theme";
 import { useCategories } from "@/hooks/useCategories";
 import { formatDate } from "@/utils/formatDate";
 import { useRouter } from "expo-router";
+import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
   ScrollView,
@@ -18,6 +19,12 @@ import {
 export default function Home() {
   const router = useRouter();
   const { categories, loading } = useCategories();
+  const { t, i18n } = useTranslation();
+
+  const toggleLanguage = () => {
+    const newLang = i18n.language === "pl" ? "en" : "pl";
+    i18n.changeLanguage(newLang);
+  };
 
   if (loading) {
     return (
@@ -36,8 +43,9 @@ export default function Home() {
         >
           <SearchInput disableInput />
         </TouchableOpacity>
+        
         <TouchableOpacity
-          onPress={() => router.replace("/")}
+          onPress={toggleLanguage} 
           style={styles.icon}
         >
           <SettingsIcon />
@@ -57,7 +65,7 @@ export default function Home() {
                   })
                 }
               >
-                <Text style={styles.showMore}>Show more</Text>
+                <Text style={styles.showMore}>{t("show more")}</Text>
               </TouchableOpacity>
             </View>
 
