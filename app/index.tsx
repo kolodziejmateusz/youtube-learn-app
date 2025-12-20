@@ -18,10 +18,12 @@ export default function Welcome() {
       </View>
 
       <View style={styles.bottom}>
-        <Text style={styles.welcomeText}>{t("welcome")}</Text>
-        <Button onPress={() => router.replace("/home")}>Log in as guest</Button>
+        <Text style={styles.welcomeText}>{t("welcome.welcome")}</Text>
+        <Button onPress={() => router.replace("/home")}>
+          {t("welcome.loginButton")}
+        </Button>
         <Text style={styles.policyText}>
-          By continuing you agree with
+          {t("welcome.policy.agreement")}{" "}
           <Text
             style={styles.policyLink}
             onPress={() =>
@@ -30,16 +32,16 @@ export default function Welcome() {
               )
             }
           >
-            Terms and Conditions
+            {t("welcome.policy.terms")}
           </Text>{" "}
-          and{" "}
+          {t("welcome.policy.and")}{" "}
           <Text
             style={styles.policyLink}
             onPress={() =>
               Linking.openURL("https://github.com/kolodziejmateusz/")
             }
           >
-            Privacy Policy
+            {t("welcome.policy.privacy")}
           </Text>
         </Text>
       </View>

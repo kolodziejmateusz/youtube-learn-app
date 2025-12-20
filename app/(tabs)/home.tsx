@@ -65,7 +65,7 @@ export default function Home() {
                   })
                 }
               >
-                <Text style={styles.showMore}>{t("show more")}</Text>
+                <Text style={styles.showMore}>{t("showMore")}</Text>
               </TouchableOpacity>
             </View>
 

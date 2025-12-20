@@ -1,5 +1,39 @@
 {
-  "welcome": "Welcome to the best YouTube-based learning application.",
-  "search": "Search",
-  "show more": "show more"
+  "welcome": {
+    "welcome": "Welcome to the best YouTube-based learning application.",
+    "loginButton": "Log in as guest",
+    "policy": {
+      "agreement": "By continuing you agree with",
+      "terms": "Terms and Conditions",
+      "privacy": "Privacy Policy",
+      "and": "and"
+    }
+  },
+  "showMore": "Show more",
+  "searchVideos": "Search videos",
+  "sortModal": {
+    "title": "Sort records by:",
+    "options": {
+      "latest": "Upload date: latest",
+      "oldest": "Upload date: oldest",
+      "popular": "Most popular"
+    },
+    "confirm": "Confirm"
+  },
+  "search": {
+    "resultsFound": "{{count}} results found for:",
+    "sortBy": "Sort By:",
+    "placeholder": "Enter name to search video"
+  },
+  "tabs": {
+    "home": "Home",
+    "search": "Search"
+  },
+  "video": {
+    "notFound": "Video not found",
+    "description": "Description",
+    "statistics": "Statistics",
+    "views": "views",
+    "likes": "likes"
+  }
 }

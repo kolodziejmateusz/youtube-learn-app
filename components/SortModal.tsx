@@ -8,6 +8,7 @@ import {
   BORDER_RADIUS,
   DIMENSIONS,
 } from "@/constants/theme";
+import { useTranslation } from "react-i18next";
 
 export type SortOption = "latest" | "oldest" | "popular";
 
@@ -24,10 +25,12 @@ export default function SortModal({
   onSortSelect,
   selectedSort,
 }: SortModalProps) {
+  const { t } = useTranslation();
+
   const sortOptions: { value: SortOption; label: string }[] = [
-    { value: "latest", label: "Upload date: latest" },
-    { value: "oldest", label: "Upload date: oldest" },
-    { value: "popular", label: "Most popular" },
+    { value: "latest", label: t("sortModal.options.latest") },
+    { value: "oldest", label: t("sortModal.options.oldest") },
+    { value: "popular", label: t("sortModal.options.popular") },
   ];
 
   return (
@@ -39,7 +42,7 @@ export default function SortModal({
     >
       <View style={styles.overlay}>
         <View style={styles.modalContent}>
-          <Text style={styles.modalTitle}>Sort records by:</Text>
+          <Text style={styles.modalTitle}>{t("sortModal.title")}</Text>
 
           {sortOptions.map((option) => (
             <Pressable
@@ -65,7 +68,9 @@ export default function SortModal({
           ))}
 
           <Pressable style={styles.confirmButton} onPress={onClose}>
-            <Text style={styles.confirmButtonText}>Confirm</Text>
+            <Text style={styles.confirmButtonText}>
+              {t("sortModal.confirm")}
+            </Text>
           </Pressable>
         </View>
       </View>

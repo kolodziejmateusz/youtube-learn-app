@@ -15,8 +15,10 @@ import {
   Text,
   View,
 } from "react-native";
+import { useTranslation } from "react-i18next";
 
 export default function Search() {
+  const { t } = useTranslation();
   const { query: initialQuery } = useLocalSearchParams();
   const { results, totalResults, loading, search } = useYoutubeSearch();
 
@@ -86,11 +88,11 @@ export default function Search() {
   const getSortLabel = () => {
     switch (sortOption) {
       case "latest":
-        return "Upload date: latest";
+        return t("sortModal.options.latest");
       case "oldest":
-        return "Upload date: oldest";
+        return t("sortModal.options.oldest");
       case "popular":
-        return "Most popular";
+        return t("sortModal.options.popular");
     }
   };
 
@@ -106,7 +108,7 @@ export default function Search() {
         {results.length > 0 && (
           <View style={styles.resultsHeader}>
             <Text style={styles.resultsText}>
-              {totalResults} results found for:{" "}
+              {t("search.resultsFound", { count: totalResults })}{" "}
               <Text style={styles.resultsTextBold}>
                 {'"'}
                 {searchQuery}
@@ -118,7 +120,7 @@ export default function Search() {
               onPress={() => setModalVisible(true)}
             >
               <Text style={styles.resultsText}>
-                Sort By:{" "}
+                {t("search.sortBy")}{" "}
                 <Text style={styles.resultsTextBold}>{getSortLabel()}</Text>
               </Text>
             </Pressable>
@@ -134,7 +136,7 @@ export default function Search() {
         {!loading && results.length === 0 && !searchQuery && (
           <View style={styles.centerContainer}>
             <Text style={styles.placeholderText}>
-              Enter name to search video
+              {t("search.placeholder")}
             </Text>
           </View>
         )}
