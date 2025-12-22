@@ -1,7 +1,8 @@
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
-import { ActivityIndicator, StyleSheet, View } from "react-native";
+import { ActivityIndicator, StyleSheet, View, Platform } from "react-native";
 import { QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { queryClient } from "@/services/queryClient";
 import "@/utils/i18n";
 
@@ -28,6 +29,7 @@ export default function RootLayout() {
           }}
         />
       </View>
+      {Platform.OS === "web" && <ReactQueryDevtools />}
     </QueryClientProvider>
   );
 }

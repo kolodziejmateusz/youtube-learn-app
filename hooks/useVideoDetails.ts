@@ -1,5 +1,5 @@
+import { useQuery } from "@tanstack/react-query";
 import { youtubeApi } from "@/services/youtubeApi";
-import { useEffect, useState } from "react";
 
 type VideoDetails = {
   id: string;
@@ -15,72 +15,46 @@ type VideoDetails = {
 type UseVideoDetailsReturn = {
   video: VideoDetails | null;
   loading: boolean;
+  error: Error | null;
 };
 
-export const useVideoDetails = (
-  videoId: string | undefined
-): UseVideoDetailsReturn => {
-  const [video, setVideo] = useState<VideoDetails | null>(null);
-  const [loading, setLoading] = useState(false);
+const fetchVideoDetails = async (videoId: string) => {
+  if (!videoId) throw new Error("No videoId");
 
-  useEffect(() => {
-    if (!videoId) return;
+  const data = await youtubeApi.getVideoDetails({ videoId });
+  const item = data.items?.[0];
 
-    let isMounted = true;
-    const abortController = new AbortController();
+  if (!item) throw new Error("Video not found");
 
-    const fetchDetails = async () => {
-      setLoading(true);
+  const snippet = item.snippet;
+  const statistics = item.statistics;
 
-      try {
-        const data = await youtubeApi.getVideoDetails(
-          { videoId },
-          abortController.signal
-        );
-        const item = data.items?.[0];
+  return {
+    id: videoId,
+    title: snippet.title,
+    channelTitle: snippet.channelTitle,
+    description: snippet.description,
+    viewCount: statistics.viewCount,
+    likeCount: statistics.likeCount,
+    thumbnailUrl: snippet.thumbnails.high.url,
+    publishedAt: snippet.publishedAt,
+  };
+};
 
-        if (!item) throw new Error("Video not found");
+export const useVideoDetails = (videoId: string): UseVideoDetailsReturn => {
+  const {
+    data: video,
+    isPending: loading,
+    error,
+  } = useQuery({
+    queryKey: ["videoDetails", videoId],
+    queryFn: () => fetchVideoDetails(videoId),
+    enabled:  videoId != null,
+  });
 
-        const snippet = item.snippet;
-        const statistics = item.statistics;
-
-        if (isMounted) {
-          setVideo({
-            id: videoId,
-            title: snippet.title,
-            channelTitle: snippet.channelTitle,
-            description: snippet.description,
-            viewCount: statistics.viewCount,
-            likeCount: statistics.likeCount,
-            thumbnailUrl: snippet.thumbnails.high.url,
-            publishedAt: snippet.publishedAt,
-          });
-        }
-      } catch (err) {
-        if (err instanceof Error && err.name === "AbortError") {
-          console.log("Video details fetch cancelled");
-          return;
-        }
-
-        console.error("Video details error:", err);
-
-        if (isMounted) {
-          setVideo(null);
-        }
-      } finally {
-        if (isMounted) {
-          setLoading(false);
-        }
-      }
-    };
-
-    fetchDetails();
-
-    return () => {
-      isMounted = false;
-      abortController.abort();
-    };
-  }, [videoId]);
-
-  return { video, loading };
+  return {
+    video: video ?? null,
+    loading,
+    error: error ?? null,
+  };
 };
