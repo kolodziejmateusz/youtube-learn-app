@@ -1,7 +1,9 @@
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
-import '@/utils/i18n';
+import { QueryClientProvider } from "@tanstack/react-query";
+import { queryClient } from "@/services/queryClient";
+import "@/utils/i18n";
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
@@ -18,13 +20,15 @@ export default function RootLayout() {
   }
 
   return (
-    <View style={styles.container}>
-      <Stack
-        screenOptions={{
-          headerShown: false,
-        }}
-      />
-    </View>
+    <QueryClientProvider client={queryClient}>
+      <View style={styles.container}>
+        <Stack
+          screenOptions={{
+            headerShown: false,
+          }}
+        />
+      </View>
+    </QueryClientProvider>
   );
 }
 
