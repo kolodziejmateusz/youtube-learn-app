@@ -1,5 +1,5 @@
-const baseUrl = "http://192.168.55.111:3000/youtube/v3";
-// const baseUrl = "https://www.googleapis.com/youtube/v3";
+// const baseUrl = "http://192.168.55.101:3000/youtube/v3";
+const baseUrl = "https://www.googleapis.com/youtube/v3";
 
 const youtubeAPIKey = process.env.EXPO_PUBLIC_YOUTUBE_API_KEY;
 
@@ -12,6 +12,7 @@ if (!youtubeAPIKey) {
 type SearchParams = {
   query: string;
   maxResults?: number;
+  pageToken?: string;
 };
 
 type VideoDetailsParams = {
@@ -20,11 +21,13 @@ type VideoDetailsParams = {
 
 export const youtubeApi = {
   searchVideos: async (params: SearchParams, signal?: AbortSignal) => {
-    const { query, maxResults = 10 } = params;
+    const { query, maxResults = 10, pageToken } = params;
 
     const url = `${baseUrl}/search?part=snippet&type=video&q=${encodeURIComponent(
       query
-    )}&key=${youtubeAPIKey}&maxResults=${maxResults}`;
+    )}&key=${youtubeAPIKey}&maxResults=${maxResults}${
+      pageToken ? `&pageToken=${pageToken}` : ""
+    }`;
 
     try {
       const response = await fetch(url, { signal });
