@@ -37,7 +37,7 @@ export default function Search() {
     isError,
   } = useYoutubeSearch({
     query: debouncedQuery,
-    maxResults: 10,
+    maxResults: 30,
     enabled: debouncedQuery.trim().length > 0,
   });
 
