@@ -43,11 +43,8 @@ export default function Home() {
         >
           <SearchInput disableInput />
         </TouchableOpacity>
-        
-        <TouchableOpacity
-          onPress={toggleLanguage} 
-          style={styles.icon}
-        >
+
+        <TouchableOpacity onPress={toggleLanguage} style={styles.icon}>
           <SettingsIcon />
         </TouchableOpacity>
       </View>
