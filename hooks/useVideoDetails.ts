@@ -26,8 +26,7 @@ const fetchVideoDetails = async (videoId: string) => {
 
   if (!item) throw new Error("Video not found");
 
-  const snippet = item.snippet;
-  const statistics = item.statistics;
+  const { snippet, statistics } = item;
 
   return {
     id: videoId,
@@ -35,8 +34,8 @@ const fetchVideoDetails = async (videoId: string) => {
     channelTitle: snippet.channelTitle,
     description: snippet.description,
     viewCount: statistics.viewCount,
-    likeCount: statistics.likeCount,
-    thumbnailUrl: snippet.thumbnails.high.url,
+    likeCount: statistics.likeCount ?? "0",
+    thumbnailUrl: snippet.thumbnails.high?.url ?? "",
     publishedAt: snippet.publishedAt,
   };
 };
@@ -49,7 +48,7 @@ export const useVideoDetails = (videoId: string): UseVideoDetailsReturn => {
   } = useQuery({
     queryKey: ["videoDetails", videoId],
     queryFn: () => fetchVideoDetails(videoId),
-    enabled:  videoId != null,
+    enabled: videoId != null && videoId.length > 0,
   });
 
   return {
