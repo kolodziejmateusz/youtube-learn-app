@@ -9,7 +9,7 @@ import mockVideoDetails from "@/assets/data/mockVideoDetails.json";
 import i18n from "@/utils/i18n";
 
 // const baseUrl = "http://192.168.55.109:3000/youtube/v3";
-const baseUrl = "https://www.googleapis.com/youtube/vc3";
+const baseUrl = "https://www.googleapis.com/youtube/v3";
 const youtubeAPIKey = process.env.EXPO_PUBLIC_YOUTUBE_API_KEY;
 
 if (!youtubeAPIKey) {
