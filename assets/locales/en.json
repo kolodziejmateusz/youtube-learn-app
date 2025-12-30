@@ -1,0 +1,44 @@
+{
+  "welcome": {
+    "welcome": "Welcome to the best YouTube-based learning application.",
+    "loginButton": "Log in as guest",
+    "policy": {
+      "agreement": "By continuing you agree with",
+      "terms": "Terms and Conditions",
+      "privacy": "Privacy Policy",
+      "and": "and"
+    }
+  },
+  "showMore": "Show more",
+  "searchVideos": "Search videos",
+  "sortModal": {
+    "title": "Sort records by:",
+    "options": {
+      "latest": "Upload date: latest",
+      "oldest": "Upload date: oldest",
+      "popular": "Most popular"
+    },
+    "confirm": "Confirm"
+  },
+  "search": {
+    "resultsFound": "{{count}} results found for:",
+    "sortBy": "Sort By:",
+    "placeholder": "Enter name to search video"
+  },
+  "tabs": {
+    "home": "Home",
+    "search": "Search"
+  },
+  "video": {
+    "notFound": "Video not found",
+    "description": "Description",
+    "statistics": "Statistics",
+    "views": "views",
+    "likes": "likes"
+  },
+  "api": {
+    "errorTitle": "Something went wrong",
+    "searchError": "You probably have internet connection issues. How about watching one of the videos we downloaded for you?",
+    "videoDetailsError": "You probably have internet connection issues. How about watching this video you didn't finish recently? We downloaded it for you."
+  }
+}

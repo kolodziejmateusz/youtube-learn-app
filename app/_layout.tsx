@@ -1,6 +1,13 @@
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
-import { ActivityIndicator, StyleSheet, View } from "react-native";
+import { ActivityIndicator, StyleSheet, View, Platform } from "react-native";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { queryClient } from "@/services/queryClient";
+import Toast from "react-native-toast-message";
+import { toastConfig } from "@/services/toastConfig"; 
+
+import "@/utils/i18n";
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
@@ -17,13 +24,17 @@ export default function RootLayout() {
   }
 
   return (
-    <View style={styles.container}>
-      <Stack
-        screenOptions={{
-          headerShown: false,
-        }}
-      />
-    </View>
+    <QueryClientProvider client={queryClient}>
+      <View style={styles.container}>
+        <Stack
+          screenOptions={{
+            headerShown: false,
+          }}
+        />
+      </View>
+      {Platform.OS === "web" && <ReactQueryDevtools />}
+      <Toast config={toastConfig}/>
+    </QueryClientProvider>
   );
 }
 

@@ -6,19 +6,21 @@ import { useYoutubeSearch } from "@/hooks/useYoutubeSearch";
 import { useDebounce } from "@/hooks/useDebounce";
 import { formatDate } from "@/utils/formatDate";
 import { useLocalSearchParams } from "expo-router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import {
   ActivityIndicator,
   Pressable,
-  ScrollView,
   StyleSheet,
   Text,
   View,
+  FlatList,
 } from "react-native";
+import { useTranslation } from "react-i18next";
+import { VideoItem } from "@/types/VideoItem";
 
 export default function Search() {
+  const { t } = useTranslation();
   const { query: initialQuery } = useLocalSearchParams();
-  const { results, totalResults, loading, search } = useYoutubeSearch();
 
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [sortOption, setSortOption] = useState<SortOption>("popular");
@@ -26,7 +28,18 @@ export default function Search() {
 
   const debouncedQuery = useDebounce(searchQuery, 500);
 
-  const abortControllerRef = useRef<AbortController | null>(null);
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    isError,
+  } = useYoutubeSearch({
+    query: debouncedQuery,
+    maxResults: 30,
+    enabled: debouncedQuery.trim().length > 0,
+  });
 
   useEffect(() => {
     if (initialQuery && typeof initialQuery === "string") {
@@ -34,35 +47,27 @@ export default function Search() {
     }
   }, [initialQuery]);
 
-  useEffect(() => {
-    if (debouncedQuery.trim()) {
-      performSearch(debouncedQuery);
-    } else {
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
+  const allResults = useMemo(() => {
+    if (!data?.pages) return [];
+
+    const allVideos = data.pages.flatMap((page) => page.items || []);
+
+    const videoMap = new Map<string, VideoItem>();
+
+    allVideos.forEach((video) => {
+      const videoId = video.id.videoId;
+      if (!videoMap.has(videoId)) {
+        videoMap.set(videoId, video);
       }
-    }
-  }, [debouncedQuery]);
+    });
 
-  const performSearch = async (query: string) => {
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
-    }
+    return Array.from(videoMap.values());
+  }, [data]);
 
-    abortControllerRef.current = new AbortController();
-    await search(query, 10, abortControllerRef.current.signal);
-  };
-
-  useEffect(() => {
-    return () => {
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
-    };
-  }, []);
+  const totalResults = data?.pages?.[0]?.pageInfo?.totalResults || 0;
 
   const getSortedResults = () => {
-    const sorted = [...results];
+    const sorted = [...allResults];
 
     if (sortOption === "latest") {
       return sorted.sort(
@@ -86,15 +91,97 @@ export default function Search() {
   const getSortLabel = () => {
     switch (sortOption) {
       case "latest":
-        return "Upload date: latest";
+        return t("sortModal.options.latest");
       case "oldest":
-        return "Upload date: oldest";
+        return t("sortModal.options.oldest");
       case "popular":
-        return "Most popular";
+        return t("sortModal.options.popular");
     }
   };
 
   const sortedResults = getSortedResults();
+
+  const handleLoadMore = () => {
+    if (hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  };
+
+  const renderItem = ({ item }: { item: VideoItem }) => (
+    <Card
+      key={item.id.videoId}
+      id={item.id.videoId}
+      title={item.snippet.title}
+      thumbnailUrl={item.snippet.thumbnails.high.url}
+      publishedAt={formatDate(item.snippet.publishedAt)}
+      channelTitle={item.snippet.channelTitle}
+      variant="full"
+    />
+  );
+
+  const renderFooter = () => {
+    if (!isFetchingNextPage) return null;
+
+    return (
+      <View style={styles.footerLoader}>
+        <ActivityIndicator size="small" color={COLORS.loading} />
+      </View>
+    );
+  };
+
+  const renderHeader = () => {
+    if (sortedResults.length === 0) return null;
+
+    return (
+      <View style={styles.resultsHeader}>
+        <Text style={styles.resultsText}>
+          {t("search.resultsFound", { count: totalResults })}{" "}
+          <Text style={styles.resultsTextBold}>
+            {'"'}
+            {searchQuery}
+            {'"'}
+          </Text>
+        </Text>
+        <Pressable
+          style={styles.sortByContainer}
+          onPress={() => setModalVisible(true)}
+        >
+          <Text style={styles.resultsText}>
+            {t("search.sortBy")}{" "}
+            <Text style={styles.resultsTextBold}>{getSortLabel()}</Text>
+          </Text>
+        </Pressable>
+      </View>
+    );
+  };
+
+  const renderEmptyComponent = () => {
+    if (isLoading) {
+      return (
+        <View style={styles.centerContainer}>
+          <ActivityIndicator size="large" color={COLORS.loading} />
+        </View>
+      );
+    }
+
+    if (!searchQuery.trim()) {
+      return (
+        <View style={styles.centerContainer}>
+          <Text style={styles.placeholderText}>{t("search.placeholder")}</Text>
+        </View>
+      );
+    }
+
+    if (isError) {
+      return (
+        <View style={styles.centerContainer}>
+          <Text style={styles.placeholderText}>{t("search.error")}</Text>
+        </View>
+      );
+    }
+
+    return null;
+  };
 
   return (
     <View style={styles.container}>
@@ -102,59 +189,20 @@ export default function Search() {
         <SearchInput onSearch={setSearchQuery} />
       </View>
 
-      <ScrollView showsVerticalScrollIndicator={false}>
-        {results.length > 0 && (
-          <View style={styles.resultsHeader}>
-            <Text style={styles.resultsText}>
-              {totalResults} results found for:{" "}
-              <Text style={styles.resultsTextBold}>
-                {'"'}
-                {searchQuery}
-                {'"'}
-              </Text>
-            </Text>
-            <Pressable
-              style={styles.sortByContainer}
-              onPress={() => setModalVisible(true)}
-            >
-              <Text style={styles.resultsText}>
-                Sort By:{" "}
-                <Text style={styles.resultsTextBold}>{getSortLabel()}</Text>
-              </Text>
-            </Pressable>
-          </View>
-        )}
-
-        {loading && (
-          <View style={styles.centerContainer}>
-            <ActivityIndicator size="large" color={COLORS.loading} />
-          </View>
-        )}
-
-        {!loading && results.length === 0 && !searchQuery && (
-          <View style={styles.centerContainer}>
-            <Text style={styles.placeholderText}>
-              Enter name to search video
-            </Text>
-          </View>
-        )}
-
-        {!loading && sortedResults.length > 0 && (
-          <>
-            {sortedResults.map((video) => (
-              <Card
-                key={video.id.videoId}
-                id={video.id.videoId}
-                title={video.snippet.title}
-                thumbnailUrl={video.snippet.thumbnails.high.url}
-                publishedAt={formatDate(video.snippet.publishedAt)}
-                channelTitle={video.snippet.channelTitle}
-                variant="full"
-              />
-            ))}
-          </>
-        )}
-      </ScrollView>
+      <FlatList
+        data={sortedResults}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id.videoId}
+        ListHeaderComponent={renderHeader}
+        ListFooterComponent={renderFooter}
+        ListEmptyComponent={renderEmptyComponent}
+        onEndReached={handleLoadMore}
+        onEndReachedThreshold={0.5}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={
+          sortedResults.length === 0 && styles.emptyListContent
+        }
+      />
 
       <SortModal
         visible={modalVisible}
@@ -202,5 +250,12 @@ const styles = StyleSheet.create({
     marginTop: SPACING.sm,
     alignItems: "flex-end",
     paddingVertical: SPACING.md,
+  },
+  footerLoader: {
+    paddingVertical: SPACING.xl,
+    alignItems: "center",
+  },
+  emptyListContent: {
+    flexGrow: 1,
   },
 });

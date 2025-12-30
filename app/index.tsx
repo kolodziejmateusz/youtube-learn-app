@@ -2,9 +2,11 @@ import Button from "@/components/Button";
 import { useRouter } from "expo-router";
 import { Image, Linking, StyleSheet, Text, View } from "react-native";
 import { COLORS, FONTS, FONT_SIZES, LAYOUT } from "@/constants/theme";
+import { useTranslation } from "react-i18next";
 
 export default function Welcome() {
   const router = useRouter();
+  const { t } = useTranslation();
 
   return (
     <View style={styles.container}>
@@ -16,12 +18,12 @@ export default function Welcome() {
       </View>
 
       <View style={styles.bottom}>
-        <Text style={styles.welcomeText}>
-          Welcome to the best YouTube-based learning application.{" "}
-        </Text>
-        <Button onPress={() => router.replace("/home")}>Log in as guest</Button>
+        <Text style={styles.welcomeText}>{t("welcome.welcome")}</Text>
+        <Button onPress={() => router.replace("/home")}>
+          {t("welcome.loginButton")}
+        </Button>
         <Text style={styles.policyText}>
-          By continuing you agree with
+          {t("welcome.policy.agreement")}{" "}
           <Text
             style={styles.policyLink}
             onPress={() =>
@@ -30,16 +32,16 @@ export default function Welcome() {
               )
             }
           >
-            Terms and Conditions
+            {t("welcome.policy.terms")}
           </Text>{" "}
-          and{" "}
+          {t("welcome.policy.and")}{" "}
           <Text
             style={styles.policyLink}
             onPress={() =>
               Linking.openURL("https://github.com/kolodziejmateusz/")
             }
           >
-            Privacy Policy
+            {t("welcome.policy.privacy")}
           </Text>
         </Text>
       </View>

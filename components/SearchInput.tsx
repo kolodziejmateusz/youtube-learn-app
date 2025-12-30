@@ -8,6 +8,7 @@ import {
   DIMENSIONS,
   BORDER_RADIUS,
 } from "@/constants/theme";
+import { useTranslation } from "react-i18next";
 
 interface SearchInputProps {
   onSearch?: (query: string) => void;
@@ -19,6 +20,7 @@ export default function SearchInput({
   disableInput,
 }: SearchInputProps) {
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const { t } = useTranslation();
 
   const handleChangeText = useCallback(
     (text: string) => {
@@ -36,14 +38,14 @@ export default function SearchInput({
       {!disableInput ? (
         <TextInput
           style={styles.input}
-          placeholder="Search videos"
+          placeholder={t("searchVideos")}
           placeholderTextColor={COLORS.text.primary}
           value={searchQuery}
           onChangeText={handleChangeText}
           returnKeyType="search"
         />
       ) : (
-        <Text style={styles.disabledText}>Search videos</Text>
+        <Text style={styles.disabledText}>{t("searchVideos")}</Text>
       )}
     </View>
   );

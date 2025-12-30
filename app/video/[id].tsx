@@ -14,6 +14,7 @@ import {
 import { useVideoDetails } from "@/hooks/useVideoDetails";
 import { useLocalSearchParams } from "expo-router";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
   ScrollView,
@@ -23,6 +24,7 @@ import {
 } from "react-native";
 
 export default function Video() {
+  const { t } = useTranslation();
   const { id } = useLocalSearchParams<{ id: string }>();
   const { video, loading } = useVideoDetails(id);
 
@@ -37,7 +39,7 @@ export default function Video() {
   if (!video) {
     return (
       <View style={styles.centerContainer}>
-        <Text style={styles.errorText}>{"Video not found"}</Text>
+        <Text style={styles.errorText}>{t("video.notFound")}</Text>
       </View>
     );
   }
@@ -56,17 +58,21 @@ export default function Video() {
           </View>
           <Text style={styles.channelName}>{video.channelTitle}</Text>
         </View>
-        <Text style={styles.sectionTitle}>Description</Text>
+        <Text style={styles.sectionTitle}>{t("video.description")}</Text>
         <Text style={styles.description}>{video.description}</Text>
-        <Text style={styles.sectionTitle}>Statistics</Text>
+        <Text style={styles.sectionTitle}>{t("video.statistics")}</Text>
         <View style={styles.statsRow}>
           <View style={styles.statBox}>
             <ViewsIcon />
-            <Text style={styles.statValue}>{video.viewCount} views</Text>
+            <Text style={styles.statValue}>
+              {video.viewCount} {t("video.views")}
+            </Text>
           </View>
           <View style={styles.statBox}>
             <LikesIcon />
-            <Text style={styles.statValue}>{video.likeCount} likes</Text>
+            <Text style={styles.statValue}>
+              {video.likeCount} {t("video.likes")}
+            </Text>
           </View>
         </View>
       </View>

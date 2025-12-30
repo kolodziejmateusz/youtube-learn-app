@@ -1,0 +1,44 @@
+{
+  "welcome": {
+    "welcome": "Witaj w najlepszej aplikacji do nauki opartej na YouTube.",
+    "loginButton": "Zaloguj jako gość",
+    "policy": {
+      "agreement": "Kontynuując zgadzasz się na",
+      "terms": "Regulamin",
+      "privacy": "Polityka prywatności",
+      "and": "i"
+    }
+  },
+  "showMore": "Pokaż więcej",
+  "searchVideos": "Szukaj filmów",
+  "sortModal": {
+    "title": "Sortuj według:",
+    "options": {
+      "latest": "Data uploadu: najnowsze",
+      "oldest": "Data uploadu: najstarsze",
+      "popular": "Najpopularniejsze"
+    },
+    "confirm": "Potwierdź"
+  },
+  "search": {
+    "resultsFound": "Znaleziono {{count}} wyników dla:",
+    "sortBy": "Sortuj według:",
+    "placeholder": "Wpisz nazwę aby wyszukać filmy"
+  },
+  "tabs": {
+    "home": "Strona główna",
+    "search": "Wyszukiwanie"
+  },
+  "video": {
+    "notFound": "Film nie znaleziony",
+    "description": "Opis",
+    "statistics": "Statystyki",
+    "views": "wyświetleń",
+    "likes": "lajków"
+  },
+  "api": {
+    "errorTitle": "Coś poszło nie tak",
+    "searchError": "Prawdopodobnie masz problemy z internetem. Co powiesz na obejrzenie jednego z filmów, które dla Ciebie pobraliśmy?",
+    "videoDetailsError": "Prawdopodobnie masz problemy z internetem. Co powiesz na obejrzenie tego filmu, którego nie skończyłeś ostatnio? Pobraliśmy go dla Ciebie."
+  }
+}
