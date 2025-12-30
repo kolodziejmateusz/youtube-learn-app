@@ -35,5 +35,10 @@
     "statistics": "Statystyki",
     "views": "wyświetleń",
     "likes": "lajków"
+  },
+  "api": {
+    "errorTitle": "Coś poszło nie tak",
+    "searchError": "Prawdopodobnie masz problemy z internetem. Co powiesz na obejrzenie jednego z filmów, które dla Ciebie pobraliśmy?",
+    "videoDetailsError": "Prawdopodobnie masz problemy z internetem. Co powiesz na obejrzenie tego filmu, którego nie skończyłeś ostatnio? Pobraliśmy go dla Ciebie."
   }
 }

@@ -35,5 +35,10 @@
     "statistics": "Statistics",
     "views": "views",
     "likes": "likes"
+  },
+  "api": {
+    "errorTitle": "Something went wrong",
+    "searchError": "You probably have internet connection issues. How about watching one of the videos we downloaded for you?",
+    "videoDetailsError": "You probably have internet connection issues. How about watching this video you didn't finish recently? We downloaded it for you."
   }
 }

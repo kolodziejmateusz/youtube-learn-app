@@ -4,6 +4,9 @@ import { ActivityIndicator, StyleSheet, View, Platform } from "react-native";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { queryClient } from "@/services/queryClient";
+import Toast from "react-native-toast-message";
+import { toastConfig } from "@/services/toastConfig"; 
+
 import "@/utils/i18n";
 
 export default function RootLayout() {
@@ -30,6 +33,7 @@ export default function RootLayout() {
         />
       </View>
       {Platform.OS === "web" && <ReactQueryDevtools />}
+      <Toast config={toastConfig}/>
     </QueryClientProvider>
   );
 }

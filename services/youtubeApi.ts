@@ -2,9 +2,14 @@ import {
   SearchResponseSchema,
   VideoDetailsResponseSchema,
 } from "@/schemas/youtubeApiSchema";
+import Toast from "react-native-toast-message";
 
-const baseUrl = "https://www.googleapis.com/youtube/v3";
+import mockSearchResults from "@/assets/data/mockSearchResults.json";
+import mockVideoDetails from "@/assets/data/mockVideoDetails.json";
+import i18n from "@/utils/i18n";
+
 // const baseUrl = "http://192.168.55.109:3000/youtube/v3";
+const baseUrl = "https://www.googleapis.com/youtube/vc3";
 const youtubeAPIKey = process.env.EXPO_PUBLIC_YOUTUBE_API_KEY;
 
 if (!youtubeAPIKey) {
@@ -21,6 +26,17 @@ type SearchParams = {
 
 type VideoDetailsParams = {
   videoId: string;
+};
+
+// Funkcja do pokazywania Toast z informacją o błędzie
+const showApiErrorToast = (message: string) => {
+  Toast.show({
+    type: "error",
+    text1: i18n.t("api.errorTitle"),
+    text2: message,
+    position: "top",
+    visibilityTime: 8000,
+  });
 };
 
 export const youtubeApi = {
@@ -58,7 +74,19 @@ export const youtubeApi = {
       if (error instanceof Error && error.name === "AbortError") {
         throw error;
       }
-      throw error;
+
+      console.warn("Using mock search data due to API error:", error);
+
+      showApiErrorToast(i18n.t("api.searchError"));
+
+      const parsed = SearchResponseSchema.safeParse(mockSearchResults);
+
+      if (!parsed.success) {
+        console.error("Mock data validation failed:", parsed.error.format());
+        throw new Error("Mock data is invalid");
+      }
+
+      return parsed.data;
     }
   },
 
@@ -93,7 +121,22 @@ export const youtubeApi = {
       if (error instanceof Error && error.name === "AbortError") {
         throw error;
       }
-      throw error;
+
+      console.warn("Using mock video details due to API error:", error);
+
+      showApiErrorToast(i18n.t("api.videoDetailsError"));
+
+      const parsed = VideoDetailsResponseSchema.safeParse(mockVideoDetails);
+
+      if (!parsed.success) {
+        console.error(
+          "Mock video data validation failed:",
+          parsed.error.format()
+        );
+        throw new Error("Mock video data is invalid");
+      }
+
+      return parsed.data;
     }
   },
 };
