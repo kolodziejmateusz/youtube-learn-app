@@ -1,50 +1,166 @@
-# Welcome to your Expo app 👋
+# YouTube Learn App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Aplikacja mobilna stworzona w React Native z Expo, która służy jako centrum wiedzy dla Junior React Native Developerów. Aplikacja została zrealizowana jako zadanie rekrutacyjne w przeciągu 72 godzin, a później była udoskonalana na podstawie otrzymanych feedbacków.
 
-## Get started
+## 📱 O Projekcie
 
-1. Install dependencies
+YouTube Learn App to aplikacja do przeglądania i zarządzania filmami edukacyjnymi z YouTube, podzielonymi na kategorie tematyczne: React Native, React, TypeScript i JavaScript. Aplikacja wykorzystuje YouTube Data API do pobierania aktualnych treści edukacyjnych.
 
-   ```bash
-   npm install
-   ```
+## ✨ Główne Funkcjonalności
 
-2. Start the app
 
-   ```bash
-   npx expo start
-   ```
+- **Ekran główny** z podziałem na cztery kategorie: React Native, React, TypeScript, JavaScript
+- **Poziome przewijanie list** z opcją "Show more" przekierowującą do ekranu wyszukiwania
+- **Wyszukiwarka wideo** z live search i debounce (500ms)
+- **Ekran szczegółów wideo** z odtwarzaczem wideo i opisem
+- **Odtwarzacz wideo** obsługujący tryb zminiaturyzowany i pełnoekranowy
+- Sortowanie wyników wyszukiwania
 
-In the output, you'll find options to open the app in a
+## ✨ Widoki
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+### Widok Startowy
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+![Widok startowy](./assets/images-readme/1.gif)
 
-## Get a fresh project
+### Widok główny
 
-When you're ready, run:
+![Widok główny](./assets/images-readme/2.gif)
+
+### Widok kategorii
+
+![Widok kategorii](./assets/images-readme/3.gif)
+
+### Widok wyszukiwania
+
+![Widok wyszukiwania](./assets/images-readme/4.png)
+
+### Widok szczegółowy wideo
+
+![Widok szczegółowy wideo](./assets/images-readme/5.png)
+
+
+
+## 🛠️ Technologie
+
+- **React Native** - framework do tworzenia aplikacji mobilnych
+- **Expo** - platforma ułatwiająca development i deployment
+- **TypeScript** - typowanie statyczne dla JavaScript
+- **React Query** - zarządzanie stanem asynchronicznym i cache'owaniem danych
+- **Expo Video** - odtwarzacz wideo
+- **YouTube Data API v3** - źródło danych o filmach
+- **i18next / react-i18next** - internacjonalizacja (PL/EN)
+- **Zod** - walidacja danych z API
+
+## 🚀 Uruchomienie Projektu
+
+### Wymagania
+
+- Node.js
+- npm
+- Expo CLI
+- Aplikacja Expo Go na telefonie (opcjonalnie)
+
+### Instalacja
+
+1. Sklonuj repozytorium:
 
 ```bash
-npm run reset-project
+git clone https://github.com/kolodziejmateusz/youtube-learn-app.git
+cd youtube-learn-app
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+2. Zainstaluj zależności:
 
-## Learn more
+```bash
+npm install
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+3. Utwórz plik `.env` w głównym katalogu projektu:
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+```env
+EXPO_PUBLIC_YOUTUBE_API_KEY=YOUR_API_KEY_HERE
+```
 
-## Join the community
+> **Uwaga:** Aby uzyskać własny klucz API:
+>
+> 1. Przejdź do [Google Cloud Console](https://console.cloud.google.com/)
+> 2. Utwórz nowy projekt
+> 3. Włącz YouTube Data API v3
+> 4. Wygeneruj klucz API w sekcji Credentials
 
-Join our community of developers creating universal apps.
+4. Uruchom aplikację:
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+```bash
+npx expo start
+```
+
+5. Wybierz platformę:
+   - Naciśnij `w` aby uruchomić w przeglądarce
+   - Zeskanuj kod QR aplikacją Expo Go aby uruchomić na telefonie
+
+## 🎯 Kluczowe Implementacje
+
+### Architektura
+
+- **Separacja logiki od komponentów** - wydzielone serwisy API i custom hooks
+- **Modularność** - małe, czytelne komponenty z pojedynczą odpowiedzialnością
+- **TypeScript** - pełne typowanie w całej aplikacji
+- **Theme system** - centralne zarządzanie stylami
+
+### Zarządzanie Danymi
+
+- **React Query** z `useInfiniteQuery` - infinite scroll, cache'owanie, retry
+- **Zod** - walidacja struktury danych z YouTube API
+- **Error handling** - szczegółowe komunikaty błędów w konsoli i dla użytkownika
+
+### UX/UI
+
+- **Live search** z debounce 500ms - wyszukiwanie bez zbędnych requestów
+- **Loading states** - informacja o ładowaniu danych
+- **Internacjonalizacja** - wsparcie dla języka polskiego i angielskiego
+
+## 🔄 Historia Rozwoju
+
+Aplikacja rozwijała się iteracyjnie na podstawie szczegółowego feedbacku technicznego:
+
+### Iteracja 1 - Poprawki Podstawowe
+
+- ✅ Wydzielenie logiki API do serwisów i hooków
+- ✅ Dodanie walidacji API key
+- ✅ Usunięcie inline styles
+- ✅ Refaktor stylów - wprowadzenie theme.ts
+- ✅ Poprawienie użycia key w listach
+- ✅ Dodanie loading states
+- ✅ Implementacja live search z debounce
+
+### Iteracja 2 - Zaawansowane Funkcje
+
+- ✅ Integracja React Query
+- ✅ Infinite scroll z useInfiniteQuery
+- ✅ Zamiana ScrollView na FlatList
+- ✅ Walidacja danych z API (Zod)
+- ✅ Internacjonalizacja (i18n) - PL/EN
+- ✅ Lepsze komunikaty błędów dla użytkownika
+- ✅ Fallback z danymi z JSON przy błędach API
+
+## 🤝 Feedback i Rozwój
+
+Projekt był rozwijany zgodnie z zasadami code review i professional development:
+
+- Częste, znaczące commity
+- Praca z feedbackiem technicznym
+- Iteracyjne podejście do rozwoju funkcjonalności
+- Dokumentacja zmian i decyzji architektonicznych
+
+
+
+Projekt stworzony na potrzeby procesu rekrutacyjnego. Kod dostępny publicznie jako portfolio.
+
+## 👤 Autor
+
+**Mateusz Kołodziej**
+
+- GitHub: [@kolodziejmateusz](https://github.com/kolodziejmateusz)
+- Email: mateuszkolodziejti@gmail.com
+
+---
